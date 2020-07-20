@@ -5,9 +5,10 @@ Final Project of CS411 at UIUC
 
 ### 1. Finish User authentication pages
 
-07/13 Finish Forms with `react-native-paper`
-07/15 Finish Page Navigation with react-native-navigation 5x which was newly upgraded
-07/19 Finish Firebase Configuration. Change the form with `Formik` template and yup. Add password visibility. Add `Forgot password` part
+* 07/13 Finish Forms with `react-native-paper`
+* 07/15 Finish Page Navigation with react-native-navigation 5x which was newly upgraded
+* 07/19 Finish Firebase Configuration. Change the form with `Formik` template and yup. Add password visibility. Add `Forgot password` part
+* Add `react navigation tab`
 
 
 ## Installation
