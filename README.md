@@ -10,10 +10,3 @@ Final Project of CS411 at UIUC
 * 07/19 Finish Firebase Configuration. Change the form with `Formik` template and yup. Add password visibility. Add `Forgot password` part
 * 07/19 Add `react navigation tab`
 
-
-## Installation
-
-1. Clone this repo
-2. to install dependencies: `yarn install`
-3. add file `firebaseConfig.js` in 'components/firebase' path with your configuration.
-
