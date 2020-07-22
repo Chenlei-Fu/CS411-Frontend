@@ -4,7 +4,7 @@ import React from 'react'
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 
 function Detail(props) {
-    const { route, navigation} = props
+    const { route, navigation} = props;
     return (
         <View style={styles.container}>
             <Text style={styles.text}>Detail Screen</Text>

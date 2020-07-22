@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, StyleSheet, Text, Image } from 'react-native';
 
-import AppButton from '../components/AppButton';
-import Colors from '../utils/colors';
-import useStatusBar from '../hooks/useStatusBar';
+import AppButton from '../../components/AppButton';
+import Colors from '../../utils/colors';
+import useStatusBar from '../../hooks/useStatusBar';
 
 export default function WelcomeScreen({ navigation }) {
   useStatusBar('light-content');
@@ -11,8 +11,8 @@ export default function WelcomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
-        <Image source={require('../assets/flame.png')} style={styles.logo} />
-        <Text style={styles.subtitle}>Expo Firebase Starter</Text>
+        <Image source={require('../../assets/flame.png')} style={styles.logo} />
+        <Text style={styles.subtitle}>Ultimate MyIllini</Text>
       </View>
       <View style={styles.buttonContainer}>
         <AppButton title="Login" onPress={() => navigation.navigate('Login')} />

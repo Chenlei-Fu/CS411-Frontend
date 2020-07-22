@@ -20,8 +20,8 @@ function HomeScreen(props) {
       <Text style={styles.text}>Home Screen</Text>
       <TouchableOpacity
           style={styles.buttonContainer}
-          onPress={() => navigation.navigate('Detail')}>
-        <Text style={styles.buttonText}>Go to Detail Screen</Text>
+          onPress={() => navigation.navigate('Timer')}>
+        <Text style={styles.buttonText}>Go to Fetch Screen</Text>
       </TouchableOpacity>
     </View>
   );
