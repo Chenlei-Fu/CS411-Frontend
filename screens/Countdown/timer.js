@@ -26,7 +26,7 @@ export default class App extends React.Component {
         super(props);
         this.state = {
             curTime: null,
-            courseTime: '2020/07/22 18:40:06'
+            courseTime: '2020/07/22 20:40:06'
         };
     }
     componentDidMount() {

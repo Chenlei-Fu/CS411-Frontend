@@ -21,7 +21,12 @@ function HomeScreen(props) {
       <TouchableOpacity
           style={styles.buttonContainer}
           onPress={() => navigation.navigate('Timer')}>
-        <Text style={styles.buttonText}>Go to Fetch Screen</Text>
+        <Text style={styles.buttonText}>Your Current Schedule</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+          style={styles.buttonContainer}
+          onPress={() => navigation.navigate('Scheduler')}>
+        <Text style={styles.buttonText}>Schedule</Text>
       </TouchableOpacity>
     </View>
   );

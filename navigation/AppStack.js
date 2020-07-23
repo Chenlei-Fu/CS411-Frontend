@@ -8,6 +8,7 @@ import Detail from "../screens/Detail";
 import Settings from "../screens/Settings";
 import Profile from "../screens/Profile";
 import timer from "../screens/Countdown/timer";
+import scheduler from "../screens/Scheduler/scheduler";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -79,7 +80,7 @@ export default function AppStack() {
       />
       <Stack.Screen name="Detail" component={Detail} options={{ title: 'Detail Screen' }} />
       <Stack.Screen name="Timer" component={timer} options={{ title: 'Countdown Screen' }} />
-      {/*<Stack.Screen name="Profile" component={Profile} options={{ title: 'Profile Screen' }} />*/}
+      <Stack.Screen name="Scheduler" component={scheduler} options={{ title: 'Scheduler Screen' }} />
     </Stack.Navigator>
   );
 }
