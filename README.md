@@ -11,4 +11,5 @@ Final Project of CS411 at UIUC
 * 07/19 Add `react navigation tab`
 * 07/22 Finish coutdown page basic frame (I will add google map to this page)
 * 07/23 Finish scheduler
+* 07/24 Finish Popular Component, Add redux, fetch data from github api
 
