@@ -5,15 +5,14 @@ import actions from '../../action/index';
 import {NavigationContainer} from '@react-navigation/native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import NavigationUtil from '../../navigation/NavigationUtil';
-
-const URL = 'https://api.github.com/search/repositories?q=';
-const QUERY_STR = '&sort=stars';
+import PopularItem from '../../components/PopularItem'
+const URL = 'https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/search?subject=';
 const Tab = createMaterialTopTabNavigator();
 export default class PopularScreen extends Component{
     constructor(props) {
         super(props);
         console.log(NavigationUtil.navigation);
-        this.tabNames = ['java', 'Android', 'iOS', 'React', 'PHP']
+        this.tabNames = ['CS', 'Math', 'ECE', 'STAT', 'ECON']
     }
 
     _genTabs() {
@@ -42,7 +41,7 @@ export default class PopularScreen extends Component{
                         scrollEnabled: true,//是否支持 选项卡滚动，默认false
                         activeTintColor: 'white',
                         style: {
-                            backgroundColor: '#ffa',//TabBar 的背景颜色
+                            backgroundColor: '#222',//TabBar 的背景颜色
                             // 移除以适配react-navigation4x
                             // height: 30//fix 开启scrollEnabled后再Android上初次加载时闪烁问题
                         },
@@ -85,16 +84,17 @@ class PopularTab extends Component {
         onLoadPopularData(this.storeName, url);
     }
     genFetchUrl(key) {
-        return URL + key + QUERY_STR;
+        return URL + key;
     }
     renderItem(data) {
-        const item=data.item;
+        const item=data;
 
-        return <View style={{marginBottom: 10}}>
-            <Text style={{backgroundColor: '#faa'}}>
-                {JSON.stringify(item)}
-            </Text>
-        </View>
+        return <PopularItem
+            item={item}
+            onSelect={()=>{
+            }
+            }
+        />
     }
 
     render(){
@@ -102,7 +102,7 @@ class PopularTab extends Component {
         let store=popular[this.storeName]; //动态获取state
         if (!store) {
             store={
-                items: [],
+                response: [],
                 isLoading: false,
             }
 
@@ -110,9 +110,9 @@ class PopularTab extends Component {
         return (
             <View style={styles.container}>
                 <FlatList
-                    data={store.items}
+                    data={store.response}
                     renderItem={data => this.renderItem(data)}
-                    keyExtractor={item => '' + item.id}
+                    keyExtractor={item => '' + item.crn + item.term_id + item.full_name}
                     refreshControl={
                         <RefreshControl
                             title={'Loading'}

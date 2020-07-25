@@ -4,12 +4,10 @@ const defaultState={
 };
 /*
    popular: {
-        java: {
-            items: [],
+        STAT: {
+            response: [],
             isLoading: false
         },
-        ios: {
-        }
     }
  */
 
@@ -20,7 +18,7 @@ export default function onAction(state=defaultState, action) {
                 ...state,
                 [action.storeName]:{
                     ...[action.storeName],
-                    items:action.items,
+                    response:action.response,
                     isLoading:false,
                 }
             };

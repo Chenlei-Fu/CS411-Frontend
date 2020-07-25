@@ -23,7 +23,7 @@ export function onLoadPopularData(storeName, url) {
 function handleData(dispatch, storeName, data) {
     dispatch({
         type: Types.LOAD_POPULAR_SUCCESS,
-        items: data && data.data && data.data.items,
+        response: data && data.data && data.data.response,
         storeName
     })
 }

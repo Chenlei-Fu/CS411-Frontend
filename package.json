@@ -27,6 +27,7 @@
     "firebase": "7.9.0",
     "formik": "2.1.4",
     "moment": "2.27.0",
+    "prop-types": "15.7.2",
     "react": "16.11.0",
     "react-countdown-circle-timer": "2.3.6",
     "react-dom": "16.11.0",

@@ -13,7 +13,7 @@ export default class DataStoreDemoPage extends Component {
     }
 
     loadData() {
-        let url = `https://api.github.com/search/repositories?q=${this.value}`;
+        let url = `https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/search?subject=${this.value}`;
         this.dataDtore.fetchData(url)
             .then(data => {
                 let showData = `初次数据加载时间：${new Date(data.timestamp)}\n${JSON.stringify(data.data)}`;
