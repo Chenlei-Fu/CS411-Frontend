@@ -9,8 +9,8 @@ import Profile from "../screens/Profile/Profile";
 import timer from "../screens/Countdown/timer";
 import scheduler from "../screens/Scheduler/scheduler";
 import PopularScreen from "../screens/Popular/popularScreen";
-import searchPage from "../screens/Search/searchPage";
 import SearchPage from "../screens/Search/searchPage";
+import enrollment from "../screens/Search/enrollment";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -95,6 +95,7 @@ export default function AppStack(){
             <Stack.Screen name="Timer" component={timer} options={{ title: 'Countdown Screen' }} />
             <Stack.Screen name="Scheduler" component={scheduler} options={{ title: 'Scheduler Screen' }} />
             <Stack.Screen name="SearchPage" component={SearchPage} options={{ title: 'Search Courses' }} />
+            <Stack.Screen name="Enrollment" component={enrollment} options={{ title: 'Enroll Courses' }} />
         </Stack.Navigator>
     );
 }

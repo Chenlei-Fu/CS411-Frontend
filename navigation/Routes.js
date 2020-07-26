@@ -7,7 +7,7 @@ import AuthStack from './AuthStack';
 import AppStack from './AppStack';
 import { AuthUserContext } from './AuthUserProvider';
 import Spinner from '../components/Spinner';
-
+import { navigationRef} from './RootNavigation';
 export default function Routes() {
   const { user, setUser } = useContext(AuthUserContext);
   const [isLoading, setIsLoading] = useState(true);
@@ -32,7 +32,7 @@ export default function Routes() {
   }
 
   return (
-    <NavigationContainer theme={navigationTheme}>
+    <NavigationContainer theme={navigationTheme} ref={navigationRef}>
       {user ? <AppStack /> : <AuthStack />}
     </NavigationContainer>
   );

@@ -10,15 +10,17 @@ import {
     TouchableOpacity,
     View,
     DeviceInfo,
+    Button
 } from 'react-native';
 import DataStore from '../../expand/dao/DataStore';
 import GlobalStyles from '../../utils/GlobalStyles';
 import SearchItem from '../../components/SearchItem'
 import {AntDesign} from "@expo/vector-icons";
 import PopularItem from "../../components/PopularItem";
+import { connect } from 'react-redux'
 const URL = 'https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/search?subject=';
-
-export default class SearchPage extends Component {
+import SearchIcon from "./searchIcon";
+class SearchPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -41,6 +43,7 @@ export default class SearchPage extends Component {
     }
 
     render() {
+        const { navigation } = this.props;
         const placeholder = this.state.storeName || 'Enter your course Name';
         const renderItem = ({item}) => {
             let favoriteIcon =  <TouchableOpacity
@@ -52,7 +55,7 @@ export default class SearchPage extends Component {
             </TouchableOpacity>;
 
             return <TouchableOpacity
-                onPress={() => this.props.onSelect}
+                onPress={(item) => this.props.addItemToCart(item)}
             >
                 <View style={SearchItem.cell_container}>
                     <Text style={SearchItem.title}>
@@ -118,11 +121,20 @@ export default class SearchPage extends Component {
                     renderItem={renderItem}
                     keyExtractor={item => '' + item.crn}
                 />
+                <SearchIcon/>
 
             </View>
         );
     }
 }
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        addItemToCart: (item) => dispatch({ type: 'ADD_TO_CART', payload: item })
+    }
+}
+
+export default SearchPage;
 
 const styles = StyleSheet.create({
     container: {
