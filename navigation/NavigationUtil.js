@@ -1,4 +1,5 @@
 import {StackActions} from '@react-navigation/native';
+
 export default class NavigationUtil {
     /**
      * 跳转到指定页面

@@ -28,11 +28,6 @@ function HomeScreen(props) {
           onPress={() => navigation.navigate('Scheduler')}>
         <Text style={styles.buttonText}>Schedule</Text>
       </TouchableOpacity>
-      <TouchableOpacity
-          style={styles.buttonContainer}
-          onPress={() => navigation.navigate('DataStore')}>
-        <Text style={styles.buttonText}>DataStore</Text>
-      </TouchableOpacity>
     </View>
   );
 }
