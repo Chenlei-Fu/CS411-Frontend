@@ -7,92 +7,25 @@ import {
 } from 'react-native';
 import TimeTableView, { genTimeBlock } from 'react-native-timetable';
 
-const events_data = [
-    {
-        title: "Math347",
-        startTime: genTimeBlock("MON", 8),
-        endTime: genTimeBlock("MON", 8, 50),
-        location: "140 HAB",
-    },
-    {
-        title: "Math347",
-        startTime: genTimeBlock("WED", 8),
-        endTime: genTimeBlock("WED", 8, 50),
-        location: "140 HAB",
-    },
-    {
-        title: "Math347",
-        startTime: genTimeBlock("FRI", 8),
-        endTime: genTimeBlock("FRI", 8, 50),
-        location: "140 HAB",
-    },
-    {
-        title: "CS225 Lec",
-        startTime: genTimeBlock("MON", 11),
-        endTime: genTimeBlock("MON", 11, 50),
-        location: "1002 ECEB",
-    },
-    {
-        title: "CS225 Lec",
-        startTime: genTimeBlock("WED", 11),
-        endTime: genTimeBlock("WED", 11, 50),
-        location: "1002 ECEB",
-    },
-    {
-        title: "CS225 Lec",
-        startTime: genTimeBlock("FRI", 11),
-        endTime: genTimeBlock("FRI", 11, 50),
-        location: "1002 ECEB",
-    },
-    {
-        title: "CS233 Lec",
-        startTime: genTimeBlock("MON", 9),
-        endTime: genTimeBlock("MON", 9, 50),
-        location: "1320 DCL",
-    },
-    {
-        title: "CS233 Lec",
-        startTime: genTimeBlock("WED", 9),
-        endTime: genTimeBlock("WED", 9, 50),
-        location: "1320 DCL",
-    },
-    {
-        title: "CS233 Lec",
-        startTime: genTimeBlock("FRI", 9),
-        endTime: genTimeBlock("FRI", 9, 50),
-        location: "1320 DCL",
-    },
-    {
-        title: "CS357 Lec",
-        startTime: genTimeBlock("TUE", 15, 20),
-        endTime: genTimeBlock("TUE", 16, 40),
-        location: "1404 Siebel",
-    },
-    {
-        title: "CS357 Lec",
-        startTime: genTimeBlock("THU", 15, 20),
-        endTime: genTimeBlock("THU", 16, 40),
-        location: "1404 Siebel",
-    },
-    {
-        title: "CS225 Lab",
-        startTime: genTimeBlock("WED", 18, 30),
-        endTime: genTimeBlock("WED", 21),
-        location: "Activity Center",
-    },
-    {
-        title: "Club Activity",
-        startTime: genTimeBlock("FRI", 13, 30),
-        endTime: genTimeBlock("FRI", 14, 50),
-        location: "Activity Center",
-    },
-];
+
+
+const events_data = [{
+    "crn":12345,
+    "clsCode":"cs666",
+    "clsType":"Online",
+    "startTime":"08:30:00", //Note this is a string
+    "endTime":"10:30:00", //nullable
+    "meetday":"MTW", //nullable
+    "building":"Siebel", //nullable
+    "room":"1111", //nullable
+}];
 
 export default class App extends Component {
     constructor(props) {
         super(props);
         this.numOfDays = 5;
         this.pivotDate = genTimeBlock('mon');
+        this.parsed_array = [];
     }
 
     scrollViewRef = (ref) => {
@@ -103,13 +36,51 @@ export default class App extends Component {
         Alert.alert("onEventPress", JSON.stringify(evt));
     };
 
+    parseArray = (data) => {
+        for(let i = 0; i < data.length; i++) {
+            let meets = (data[i].meetday).split('');
+            let startTimes = (data[i].startTime).split(':');
+            let endTimes = (data[i].endTime).split(':');
+            for(let j = 0; j < meets.length; j++) {
+                let temp = "";
+                switch (meets[j]) {
+                    case "M":
+                        temp="MON";
+                        break;
+                    case "T":
+                        temp="TUE";
+                        break;
+                    case "W":
+                        temp="WED";
+                        break;
+                    case "R":
+                        temp="TUR";
+                        break;
+                    case "F":
+                        temp="TRI";
+                        break;
+                }
+                this.parsed_array.push({
+                    title: data[i].clsCode,
+                    startTime: genTimeBlock(temp, startTimes[0],startTimes[1]),
+                    endTime: genTimeBlock(temp, endTimes[0], endTimes[1]),
+                    location: data[i].building + data[i].room,
+                });
+
+
+            }
+
+        }
+    }
+
     render() {
+        this.parseArray(events_data);
         return (
             <SafeAreaView style={{flex: 1}}>
                 <View style={styles.container}>
                     <TimeTableView
                         scrollViewRef={this.scrollViewRef}
-                        events={events_data}
+                        events={this.parsed_array}
                         pivotTime={8}
                         pivotEndTime={22}
                         pivotDate={this.pivotDate}
