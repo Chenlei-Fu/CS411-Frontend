@@ -55,7 +55,7 @@ class SearchPage extends Component {
             </TouchableOpacity>;
 
             return <TouchableOpacity
-                onPress={(item) => this.props.addItemToCart(item)}
+                onPress={()=>{}}
             >
                 <View style={SearchItem.cell_container}>
                     <Text style={SearchItem.title}>
@@ -128,11 +128,6 @@ class SearchPage extends Component {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        addItemToCart: (item) => dispatch({ type: 'ADD_TO_CART', payload: item })
-    }
-}
 
 export default SearchPage;
 

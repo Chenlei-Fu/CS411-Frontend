@@ -3,9 +3,10 @@ import {
     SafeAreaView,
     StyleSheet,
     View,
-    Alert,
+    Alert, Text, TouchableOpacity,
 } from 'react-native';
 import TimeTableView, { genTimeBlock } from 'react-native-timetable';
+import axios from "axios";
 
 
 
@@ -15,9 +16,18 @@ const events_data = [{
     "clsType":"Online",
     "startTime":"08:30:00", //Note this is a string
     "endTime":"10:30:00", //nullable
-    "meetday":"MTW", //nullable
+    "meetDay":"MTW", //nullable
     "building":"Siebel", //nullable
     "room":"1111", //nullable
+}, {
+    "crn": 40317,
+    "clsCode": "CS411",
+    "clsType": "Online Lecture",
+    "startTime": "11:00:00",
+    "endTime": "12:15:00",
+    "meetDay": "MTWR",
+    "building": null,
+    "room": null
 }];
 
 export default class App extends Component {
@@ -26,6 +36,9 @@ export default class App extends Component {
         this.numOfDays = 5;
         this.pivotDate = genTimeBlock('mon');
         this.parsed_array = [];
+        this.state = {
+            remark: ''
+        }
     }
 
     scrollViewRef = (ref) => {
@@ -36,9 +49,10 @@ export default class App extends Component {
         Alert.alert("onEventPress", JSON.stringify(evt));
     };
 
+
     parseArray = (data) => {
         for(let i = 0; i < data.length; i++) {
-            let meets = (data[i].meetday).split('');
+            let meets = (data[i].meetDay).split('');
             let startTimes = (data[i].startTime).split(':');
             let endTimes = (data[i].endTime).split(':');
             for(let j = 0; j < meets.length; j++) {
@@ -75,6 +89,7 @@ export default class App extends Component {
 
     render() {
         this.parseArray(events_data);
+        const {navigation} = this.props;
         return (
             <SafeAreaView style={{flex: 1}}>
                 <View style={styles.container}>
@@ -91,6 +106,11 @@ export default class App extends Component {
                         locale="en"
                     />
                 </View>
+                <TouchableOpacity
+                    style={styles.buttonContainer}
+                    onPress={() => navigation.navigate('newWindow')}>
+                    <Text style={styles.buttonText}>new Window</Text>
+                </TouchableOpacity>
             </SafeAreaView>
         );
     }

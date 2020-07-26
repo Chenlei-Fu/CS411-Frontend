@@ -46,6 +46,7 @@
     "react-native-screens": "~2.9.0",
     "react-native-scrollable-tab-view": "1.0.0",
     "react-native-svg": "12.1.0",
+    "react-native-swipe-list-view": "3.2.3",
     "react-native-tab-view": "2.15.0",
     "react-native-table-component": "1.2.1",
     "react-native-timetable": "1.0.4",

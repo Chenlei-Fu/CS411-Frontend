@@ -84,7 +84,7 @@ class PopularTab extends Component {
         onLoadPopularData(this.storeName, url);
     }
     genFetchUrl(key) {
-        return URL + key;
+        return URL + key + '&isCurrentTerm=false';
     }
     renderItem(data) {
         const item=data;
