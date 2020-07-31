@@ -15,7 +15,7 @@ import {
     Container, Title, Progress,
 } from './styles';
 
-import * as data from '../../public/api/scheduler.json'
+
 
 import {getCountdownParts} from './helper';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
@@ -42,7 +42,7 @@ export default class App extends React.Component {
 
         return (
             <Container>
-                <Title>{data.courses[0].course_name}</Title>
+                <Title>{CS225}</Title>
                 <AnimatedCircularProgress
                     size={300}
                     width={10}
@@ -64,7 +64,7 @@ export default class App extends React.Component {
                         textAlign: "center",
                         marginTop: 100
                     }}
-                >Address: {data.courses[0].location}</Text>
+                >Address: {ECEB}</Text>
             </Container>
         );
     }

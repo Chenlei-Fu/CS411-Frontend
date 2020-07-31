@@ -20,11 +20,13 @@ import PopularItem from "../../components/PopularItem";
 import { connect } from 'react-redux'
 const URL = 'https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/search?subject=';
 import SearchIcon from "./searchIcon";
+import {addFavorite} from "../../action/favorite";
 class SearchPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
             showText: '',
+            isFavorite: false
         };
         this.dataDtore = new DataStore();
     }
@@ -48,8 +50,8 @@ class SearchPage extends Component {
         const renderItem = ({item}) => {
             let favoriteIcon =  <TouchableOpacity
                 style={{padding: 6}}
-                underlayColor='transparent'
-                onPress={() => {}}
+                underlayColor={this.state.isFavorite? 'transparent': 'black'}
+                onPress={() => this.props.addFavorite(item)}
             >
                 <AntDesign name="staro" size={24} color="black" />
             </TouchableOpacity>;
@@ -121,15 +123,31 @@ class SearchPage extends Component {
                     renderItem={renderItem}
                     keyExtractor={item => '' + item.crn}
                 />
-                <SearchIcon/>
-
+                {/*<SearchIcon/>*/}
+                <TouchableOpacity
+                    style={styles.buttonContainer}
+                    onPress={() => navigation.navigate('Favorite')}>
+                    <Text style={styles.buttonText}>Go to Favorites</Text>
+                </TouchableOpacity>
             </View>
         );
     }
 }
 
+const mapStateToProps = state => {
+    return {
+        favorites: state.favorite
+    }
+}
+const mapDispatchToProps =  dispatch => {
+    return{
+        addFavorite : item => {
+            dispatch(addFavorite(item))
+        }
+    }
+}
 
-export default SearchPage;
+export default connect(mapStateToProps,mapDispatchToProps)(SearchPage);
 
 const styles = StyleSheet.create({
     container: {
@@ -191,6 +209,35 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: '500',
     },
+    text: {
+        color: '#101010',
+        fontSize: 24,
+        fontWeight: 'bold'
+    },
+    card: {
+        width: 350,
+        height: 100,
+        borderRadius: 10,
+        backgroundColor: '#101010',
+        margin: 10,
+        padding: 10,
+        alignItems: 'center'
+    },
+    cardText: {
+        fontSize: 18,
+        color: '#ffd700',
+        marginBottom: 5
+    },
+    buttonContainer: {
+        backgroundColor: '#222',
+        borderRadius: 5,
+        padding: 10,
+        margin: 20
+    },
+    buttonText: {
+        fontSize: 20,
+        color: '#fff'
+    }
 });
 
 
