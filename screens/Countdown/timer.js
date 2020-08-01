@@ -20,6 +20,8 @@ import {
 import {getCountdownParts} from './helper';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
+import * as firebase from 'firebase'
+const email = firebase.auth().currentUser.email;
 
 export default class App extends React.Component {
     constructor(props) {

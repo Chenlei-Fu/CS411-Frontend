@@ -24,7 +24,7 @@ export default function onAction(state = [], action) {
             return [...state, action.payload]
         case Types.FAVORITE_REMOVE:
             action.payload.favId = true
-            return state.filter(item => item.CRN !== action.payload.CRN)
+            return state.filter(item => item.crn !== action.payload.crn)
         default:
             return state;
     }

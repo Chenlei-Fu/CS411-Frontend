@@ -6,8 +6,42 @@ import {removeFavorite} from "../../action/favorite";
 import {AntDesign} from "@expo/vector-icons";
 import SearchItem from "../../components/SearchItem";
 import GlobalStyles from "../../utils/GlobalStyles";
-
+import axios from "axios";
+import * as firebase from 'firebase'
+const email = firebase.auth().currentUser.email;
 class Favorite extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            user: ''
+        }
+    }
+    componentDidMount() {
+        this.unsubscriber = firebase.auth().onAuthStateChanged((user) => {
+            this.setState({ user });
+        });
+    }
+
+    postData = () => {
+        let temp = "https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/usrSchedule/"+email+'?';
+        let data = [];
+        // console.log(this.props.favorites[0].crn);
+        for(let i = 0; i < this.props.favorites.length; i++) {
+            data.push(JSON.stringify(this.props.favorites[i].crn));
+            console.log(data);
+        }
+        for(let i = 0; i < data.length; i++) {
+            axios
+                .put(temp, {
+                    crn: data[i]
+                })
+                .then(response => {
+                    if (response.data.status) {
+                        console.log(response);
+                    }
+                }).catch(error => {console.log(error)});
+        }
+    }
 
     render() {
         const renderItem = ({item}) => {
@@ -51,6 +85,11 @@ class Favorite extends React.Component{
                     renderItem={renderItem}
                     keyExtractor={item => '' + item.crn}
                 />
+                <TouchableOpacity
+                    style={styles.buttonContainer}
+                    onPress={() => this.postData()}>
+                    <Text style={styles.buttonText}>Enroll Courses</Text>
+                </TouchableOpacity>
             </View>
         )
     }

@@ -37,18 +37,22 @@ export default class Profile extends React.Component{
         this.dataDtore = new DataStore();
     }
 
-    postData = () => {
-        let temp = "https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/usrSchedule/"+this.state.currentEmail+'?';
-        axios
-            .put(temp, {
-            crn:this.state.crn
-        })
-        .then(response => {
-            if (response.data.status) {
-                console.log(response);
-            }
-        }).catch(error => {console.log(error)});
+    componentDidMount() {
+        this.loadData();
     }
+
+    // postData = () => {
+    //     let temp = "https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/usrSchedule/"+this.state.currentEmail+'?';
+    //     axios
+    //         .put(temp, {
+    //         crn:this.state.crn
+    //     })
+    //     .then(response => {
+    //         if (response.data.status) {
+    //             console.log(response);
+    //         }
+    //     }).catch(error => {console.log(error)});
+    // }
 
     loadData() {
         let temp = "https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/usrSchedule/"+this.state.currentEmail+'?';
@@ -76,7 +80,6 @@ export default class Profile extends React.Component{
 
     render() {
         const {navigation} = this.props;
-        this.loadData();
 
 
         const renderItem = ({item}) => {
@@ -175,20 +178,20 @@ export default class Profile extends React.Component{
                                 </TouchableOpacity>
                             </View>
 
-                            <View style={{ alignItems: "center" }}>
-                                <TextInput
-                                    value={this.state.crn}
-                                    onChangeText={(crn) => this.setState({ crn })}
-                                    placeholder={'Enter Course CRN'}
-                                    style={styles.input}
-                                />
-                                <TouchableOpacity
-                                    style={styles.buttonContainer}
-                                    onPress={() => this.postData()}>
-                                    <Text style={styles.buttonText}>Enroll Courses</Text>
-                                </TouchableOpacity>
+                            {/*<View style={{ alignItems: "center" }}>*/}
+                            {/*    <TextInput*/}
+                            {/*        value={this.state.crn}*/}
+                            {/*        onChangeText={(crn) => this.setState({ crn })}*/}
+                            {/*        placeholder={'Enter Course CRN'}*/}
+                            {/*        style={styles.input}*/}
+                            {/*    />*/}
+                            {/*    <TouchableOpacity*/}
+                            {/*        style={styles.buttonContainer}*/}
+                            {/*        onPress={() => this.postData()}>*/}
+                            {/*        <Text style={styles.buttonText}>Enroll Courses</Text>*/}
+                            {/*    </TouchableOpacity>*/}
 
-                            </View>
+                            {/*</View>*/}
                             {/*<ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>*/}
                             {/*    <View style={styles.mediaImageContainer}>*/}
                             {/*        <Image source={require("../../assets/media1.jpg")} style={styles.image} resizeMode="cover"></Image>*/}

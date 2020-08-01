@@ -7,38 +7,27 @@ import {
 } from 'react-native';
 import TimeTableView, { genTimeBlock } from 'react-native-timetable';
 import axios from "axios";
-
-
-
-const events_data = [{
-    "crn":12345,
-    "clsCode":"cs666",
-    "clsType":"Online",
-    "startTime":"08:30:00", //Note this is a string
-    "endTime":"10:30:00", //nullable
-    "meetDay":"MTW", //nullable
-    "building":"Siebel", //nullable
-    "room":"1111", //nullable
-}, {
-    "crn": 40317,
-    "clsCode": "CS411",
-    "clsType": "Online Lecture",
-    "startTime": "11:00:00",
-    "endTime": "12:15:00",
-    "meetDay": "MTWR",
-    "building": null,
-    "room": null
-}];
+import * as firebase from 'firebase'
+const email = firebase.auth().currentUser.email;
+let parsed_data = [];
 
 export default class App extends Component {
+
     constructor(props) {
         super(props);
         this.numOfDays = 5;
         this.pivotDate = genTimeBlock('mon');
-        this.parsed_array = [];
         this.state = {
-            remark: ''
+            events: '',
+            user: '',
         }
+    }
+
+    componentDidMount() {
+        this.unsubscriber = firebase.auth().onAuthStateChanged((user) => {
+            this.setState({ user });
+        });
+        this.loadData();
     }
 
     scrollViewRef = (ref) => {
@@ -49,9 +38,25 @@ export default class App extends Component {
         Alert.alert("onEventPress", JSON.stringify(evt));
     };
 
+    loadData() {
+        let temp = "https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/usrSchedule/"+email+'?';
+        axios.get(temp)
+            .then(res => {
+                this.setState({
+                    events: res.data.data,
+                });
+            })
+    }
+
+
 
     parseArray = (data) => {
+        /*
+          DayOfWeekString : SUN, MON, TUE, WED, THU, FRI, SAT
+            type : string
+         */
         for(let i = 0; i < data.length; i++) {
+            if(data[i].meetDay == null || data[i].startTime == null || data[i].endTime == null) continue;
             let meets = (data[i].meetDay).split('');
             let startTimes = (data[i].startTime).split(':');
             let endTimes = (data[i].endTime).split(':');
@@ -68,34 +73,35 @@ export default class App extends Component {
                         temp="WED";
                         break;
                     case "R":
-                        temp="TUR";
+                        temp="THU";
                         break;
                     case "F":
                         temp="TRI";
                         break;
                 }
-                this.parsed_array.push({
+                parsed_data.push({
                     title: data[i].clsCode,
                     startTime: genTimeBlock(temp, startTimes[0],startTimes[1]),
                     endTime: genTimeBlock(temp, endTimes[0], endTimes[1]),
-                    location: data[i].building + data[i].room,
+                    location: data[i].building + data[i].room === 0 ? 'Online': data[i].building + data[i].room,
                 });
 
 
             }
 
         }
+        // console.log(this.parsed_data);
     }
 
     render() {
-        this.parseArray(events_data);
         const {navigation} = this.props;
+        this.parseArray(this.state.events);
         return (
             <SafeAreaView style={{flex: 1}}>
                 <View style={styles.container}>
                     <TimeTableView
                         scrollViewRef={this.scrollViewRef}
-                        events={this.parsed_array}
+                        events={parsed_data}
                         pivotTime={8}
                         pivotEndTime={22}
                         pivotDate={this.pivotDate}
