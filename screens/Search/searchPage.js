@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component,useRef} from 'react';
 import {
     ActivityIndicator,
     FlatList,
@@ -10,33 +10,56 @@ import {
     TouchableOpacity,
     View,
     DeviceInfo,
-    Button
+    Button,
+    Modal
 } from 'react-native';
 import DataStore from '../../expand/dao/DataStore';
 import GlobalStyles from '../../utils/GlobalStyles';
 import SearchItem from '../../components/SearchItem'
 import {AntDesign} from "@expo/vector-icons";
+import { Fumi } from 'react-native-textinput-effects';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import PopularItem from "../../components/PopularItem";
 import { connect } from 'react-redux'
 const URL = 'https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/search?subject=';
 import SearchIcon from "./searchIcon";
+import { Modalize } from 'react-native-modalize';
 import {addFavorite} from "../../action/favorite";
+
 class SearchPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
             showText: '',
-            isFavorite: false
+            isFavorite: false,
+            name: '',
+            subject: '',
+            id: '',
+            crn: '',
+            limit: '',
+            modalVisible: false
         };
         this.dataDtore = new DataStore();
     }
 
+    setModalVisible = (visible) => {
+        this.setState({ modalVisible: visible });
+    }
+
     loadData() {
-        let url = `https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/clsSchedule/${this.value}`;
-        this.dataDtore.fetchData(url)
+        let url = `https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/search?`;
+        let temp1 = this.state.subject != ''?'subject='+this.state.subject:'';
+        let temp2 = this.state.id != ''?'id='+this.state.id:'';
+        let temp3 = this.state.crn != ''? 'crn=' + this.state.crn:'';
+        let temp4 = this.state.name!= ''? 'name=' + this.state.name: '';
+        let temp5 = this.state.limit != ''?'limit=' + this.state.limit:'';
+        let u = url+temp1+'&'+temp4+'&'+temp2+'&'+temp5+'&'+temp3+'&isCurrentTerm=true';
+        console.log(u);
+        this.dataDtore.fetchData(u)
             .then(data => {
+                console.log(data.data.response);
                 this.setState({
-                    showText: data.data.data,
+                    showText: data.data.response,
                 });
             })
             .catch(error => {
@@ -46,7 +69,17 @@ class SearchPage extends Component {
 
     render() {
         const { navigation } = this.props;
+        const { modalVisible } = this.state;
+
+
+        const tempRender = (item) => (
+            <View>
+                <Text>{item.heading}</Text>
+            </View>
+        );
+
         const placeholder = this.state.storeName || 'Enter your course Name';
+
         const renderItem = ({item}) => {
             let favoriteIcon =  <TouchableOpacity
                 style={{padding: 6}}
@@ -57,25 +90,48 @@ class SearchPage extends Component {
             </TouchableOpacity>;
 
             return <TouchableOpacity
-                onPress={()=>{}}
+                onPress={()=>{
+                    navigation.navigate('Detail', {
+                        temp:
+                            {   crn: item.crn,
+                                subject: item.subject,
+                                id: item.course_id,
+                                name: item.course_name,
+                                instructor: item.full_name
+                            }})
+                }}
             >
                 <View style={SearchItem.cell_container}>
                     <Text style={SearchItem.title}>
-                        {JSON.stringify(item.clsCode)}
+                        {JSON.stringify(item.subject) + JSON.stringify(item.course_id) + JSON.stringify(item.course_name)}
                     </Text>
                     <Text style={SearchItem.description}>
-                        {JSON.stringify(item.clsType)}
+                        {JSON.stringify(item.type_name)}
                     </Text>
                     <View style={SearchItem.row}>
                         <View style={SearchItem.row}>
-                            <Text>StartTime: {JSON.stringify(item.startTime)}</Text>
+                            <Text>CRN: {JSON.stringify(item.crn)}</Text>
                         </View>
                         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                            <Text>EndTime: </Text>
-                            <Text>{JSON.stringify(item.endTime)}</Text>
+                            <Text>Term: </Text>
+                            <Text>{JSON.stringify(item.term_name)}</Text>
                         </View>
                         {favoriteIcon}
                     </View>
+                    <View style={SearchItem.row}>
+                        <View style={SearchItem.row}>
+                            <Text>start: {JSON.stringify(item.start)}</Text>
+                        </View>
+                        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                            <Text>end: </Text>
+                            <Text>{JSON.stringify(item.end)}</Text>
+                        </View>
+                        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                            <Text>days of week: </Text>
+                            <Text>{JSON.stringify(item.days_of_week)}</Text>
+                        </View>
+                    </View>
+
                 </View>
 
             </TouchableOpacity>
@@ -83,20 +139,73 @@ class SearchPage extends Component {
 
         return (
             <View style={styles.container}>
+
+
+
                 <View style={{
-                    backgroundColor: '#222',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    height: (Platform.OS === 'ios') ? GlobalStyles.nav_bar_height_ios : GlobalStyles.nav_bar_height_android,
-                }}>
-                    <TextInput
-                        ref="input"
-                        placeholder={placeholder}
-                        onChangeText={text => this.value = text}
-                        style={styles.textInput}
-                    >
-                    </TextInput>
+                    backgroundColor: '#c9d6df',
+                    marginBottom: 30
+                }}
+                >
+                    <View style={{
+                        marginTop: 10,
+                        marginLeft: 20,
+                        marginRight: 20,
+                        marginBottom: 30
+                    }}>
+                    {/*<TextInput*/}
+                    {/*    ref="input"*/}
+                    {/*    placeholder={placeholder}*/}
+                    {/*    onChangeText={text => this.value = text}*/}
+                    {/*    style={styles.textInput}*/}
+                    {/*>*/}
+                    {/*</TextInput>*/}
+                    <Fumi
+                        label={'Course Name'}
+                        iconClass={FontAwesomeIcon}
+                        iconName={'university'}
+                        iconColor={'#ffe2e2'}
+                        iconSize={20}
+                        iconWidth={40}
+                        inputPadding={16}
+                        onChangeText={(text) => { this.setState({name: text}) }}
+                    />
+                    <Fumi
+                        label={'Subject'}
+                        iconClass={FontAwesomeIcon}
+                        iconName={'graduation-cap'}
+                        iconColor={'#8785a2'}
+                        iconSize={20}
+                        iconWidth={40}
+                        inputPadding={16}
+                        onChangeText={(text) => { this.setState({subject: text}) }}
+                    />
+                    <Fumi
+                        label={'Course Id'}
+                        iconClass={FontAwesomeIcon}
+                        iconName={'code'}
+                        iconColor={'#ffc7c7'}
+                        iconSize={20}
+                        iconWidth={40}
+                        inputPadding={16}
+                        onChangeText={(text) => { this.setState({id: text}) }}
+                    />
+                    <Fumi
+                        label={'Output Limits'}
+                        iconClass={FontAwesomeIcon}
+                        iconName={'lock'}
+                        iconColor={'#ffc7c7'}
+                        iconSize={20}
+                        iconWidth={40}
+                        inputPadding={16}
+                        onChangeText={(text) => { this.setState({limit: text}) }}
+                    />
                     <TouchableOpacity
+                        style={{
+                            backgroundColor: '#52616b',
+                            alignItems: "center",
+                            padding: 10
+                        }}
                         onPress={() => {
                             this.loadData();
                         }}
@@ -105,6 +214,7 @@ class SearchPage extends Component {
                             <Text style={styles.title}>{'Search'}</Text>
                         </View>
                     </TouchableOpacity>
+                    </View>
                 </View>
                 {/*<TextInput*/}
                 {/*    style={styles.input}*/}
@@ -121,7 +231,7 @@ class SearchPage extends Component {
                 <FlatList
                     data={this.state.showText}
                     renderItem={renderItem}
-                    keyExtractor={item => '' + item.crn}
+                    keyExtractor={item => '' + item.crn+item.term_id+item.start}
                 />
                 {/*<SearchIcon/>*/}
                 <TouchableOpacity
@@ -237,6 +347,42 @@ const styles = StyleSheet.create({
     buttonText: {
         fontSize: 20,
         color: '#fff'
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5
+    },
+    openButton: {
+        backgroundColor: "#F194FF",
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2
+    },
+    textStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center"
+    },
+    modalText: {
+        marginBottom: 15,
+        textAlign: "center"
     }
 });
 

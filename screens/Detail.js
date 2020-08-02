@@ -1,20 +1,50 @@
 // src/screens/Home.js
 
-import React from 'react'
+import React, {useState} from 'react'
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
+import axios from 'axios';
+import { VictoryBar, VictoryChart } from "victory-native";
+import {parse} from "react-native-svg";
+function Detail(props){
+    const { route } = props
+    const { temp } = route.params
+    const {crn, subject, id, name, instructor} = temp;
+    // const {data, setData} = useState([]);
 
-function Detail(props) {
-    const { route, navigation} = props;
+    // addItem = (input) => {
+    //     setData([
+    //         ...data,
+    //         input
+    //     ])
+    //     console.log(data);
+    // }
+
+
+    // const getGPA = () => {
+    //     axios
+    //         .post('https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/gpa/raw', {
+    //             term: 120198,
+    //             subject: subject,
+    //             course_id: parseInt(JSON.stringify(id)),
+    //             //course_name: name,
+    //             // crn: parseInt(JSON.stringify(crn)),
+    //             // instructor: instructor,
+    //         })
+    //         .then(response => {
+    //             console.log(response.data);
+    //         }).catch(error => {console.log(error)});
+    //
+    // }
+
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Detail Screen</Text>
-            <TouchableOpacity
-                style={styles.buttonContainer}
-                onPress={() => navigation.navigate('Settings')}>
-                <Text style={styles.buttonText}>Go to Settings</Text>
-            </TouchableOpacity>
+
+            <Text style={styles.text}>Hello</Text>
+
         </View>
     )
+
+
 }
 
 const styles = StyleSheet.create({

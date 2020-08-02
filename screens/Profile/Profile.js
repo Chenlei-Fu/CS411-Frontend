@@ -14,8 +14,10 @@ import {
     SafeAreaView,
     ScrollView,
     Image,
-    Modal
+    Modal,
+
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import { Formik } from 'formik';
 import DataStore from '../../expand/dao/DataStore';
 import * as firebase from 'firebase'
@@ -34,7 +36,8 @@ export default class Profile extends React.Component{
             crn:'',
             showText: '',
             selectedKey: '',
-            modalVisible: false
+            modalVisible: false,
+            workload: ''
         };
         this.dataDtore = new DataStore();
     }
@@ -49,6 +52,8 @@ export default class Profile extends React.Component{
                 this.setState({showText: json.data});
             })
             .catch((error) => console.error(error))
+
+        this.getWorkLoad().then(r => console.log(r));
 
     }
 
@@ -88,8 +93,36 @@ export default class Profile extends React.Component{
             .then((json) => {
                 // console.log(json);
                 this.setState({showText: json.data});
+                console.log(this.state.showText);
             })
             .catch((error) => console.error(error))
+    }
+
+    getWorkLoad = async ()  => {
+        //https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/difficulty/{{email}}
+
+        axios
+            .post('https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/difficulty/'+this.state.currentEmail+'?', {
+                term:120205
+            })
+            .then(response => {
+                if (response.data.status) {
+                    console.log(response);
+                    this.setState({workload: JSON.stringify(response.data.data)});
+                }
+            }).catch(error => {console.log(error)});
+    }
+
+
+
+
+    storeData = async (value) => {
+        try {
+            await AsyncStorage.setItem('workload', value)
+        } catch (e) {
+            // saving error
+            console.log(error);
+        }
     }
 
 
@@ -113,7 +146,6 @@ export default class Profile extends React.Component{
     render() {
         const {navigation} = this.props;
         const { modalVisible } = this.state;
-
 
         const renderItem = ({item}) => {
             let favoriteIcon =  <TouchableOpacity
@@ -198,8 +230,8 @@ export default class Profile extends React.Component{
                                 <Text style={[styles.text, styles.subText]}>94</Text>
                             </View>
                             <View style={styles.statsBox}>
-                                <Text style={[styles.text, { fontSize: 24 }]}>Term</Text>
-                                <Text style={[styles.text, styles.subText]}>Summer 2020</Text>
+                                <Text style={[styles.text, { fontSize: 24 }]}>Workload</Text>
+                                <Text style={[styles.text, styles.subText]}>{this.state.workload}</Text>
                             </View>
                         </View>
 

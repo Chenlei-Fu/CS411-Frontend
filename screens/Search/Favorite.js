@@ -29,7 +29,7 @@ class Favorite extends React.Component{
         // console.log(this.props.favorites[0].crn);
         for(let i = 0; i < this.props.favorites.length; i++) {
             data.push(JSON.stringify(this.props.favorites[i].crn));
-            console.log(data);
+            console.log(data[i]);
         }
         for(let i = 0; i < data.length; i++) {
             axios
@@ -59,20 +59,33 @@ class Favorite extends React.Component{
             >
                 <View style={SearchItem.cell_container}>
                     <Text style={SearchItem.title}>
-                        {JSON.stringify(item.clsCode)}
+                        {JSON.stringify(item.subject) + JSON.stringify(item.course_id) + JSON.stringify(item.course_name)}
                     </Text>
                     <Text style={SearchItem.description}>
-                        {JSON.stringify(item.clsType)}
+                        {JSON.stringify(item.type_name)}
                     </Text>
                     <View style={SearchItem.row}>
                         <View style={SearchItem.row}>
-                            <Text>StartTime: {JSON.stringify(item.startTime)}</Text>
+                            <Text>CRN: {JSON.stringify(item.crn)}</Text>
                         </View>
                         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                            <Text>EndTime: </Text>
-                            <Text>{JSON.stringify(item.endTime)}</Text>
+                            <Text>Term: </Text>
+                            <Text>{JSON.stringify(item.term_name)}</Text>
                         </View>
                         {favoriteIcon}
+                    </View>
+                    <View style={SearchItem.row}>
+                        <View style={SearchItem.row}>
+                            <Text>start: {JSON.stringify(item.start)}</Text>
+                        </View>
+                        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                            <Text>end: </Text>
+                            <Text>{JSON.stringify(item.end)}</Text>
+                        </View>
+                        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                            <Text>days of week: </Text>
+                            <Text>{JSON.stringify(item.days_of_week)}</Text>
+                        </View>
                     </View>
                 </View>
 

@@ -100,7 +100,7 @@ export default class App extends Component {
     }
 
     onEventPress = (evt) => {
-       Alert.alert("onEventPress", JSON.stringify(evt));
+        Alert.alert("onEventPress", JSON.stringify(evt));
     };
 
     // loadData =() => {
