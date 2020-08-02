@@ -13,7 +13,8 @@ import {
     FlatList,
     SafeAreaView,
     ScrollView,
-    Image
+    Image,
+    Modal
 } from 'react-native';
 import { Formik } from 'formik';
 import DataStore from '../../expand/dao/DataStore';
@@ -32,13 +33,23 @@ export default class Profile extends React.Component{
             currentEmail: firebase.auth().currentUser.email,
             crn:'',
             showText: '',
-            selectedKey: ''
+            selectedKey: '',
+            modalVisible: false
         };
         this.dataDtore = new DataStore();
     }
 
     componentDidMount() {
-        this.loadData();
+        fetch("https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/usrSchedule/" + this.state.currentEmail + '?', {
+            method: 'GET'
+        })
+            .then((response) => response.json())
+            .then((json) => {
+                // console.log(json);
+                this.setState({showText: json.data});
+            })
+            .catch((error) => console.error(error))
+
     }
 
     // postData = () => {
@@ -54,14 +65,31 @@ export default class Profile extends React.Component{
     //     }).catch(error => {console.log(error)});
     // }
 
-    loadData() {
-        let temp = "https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/usrSchedule/"+this.state.currentEmail+'?';
-        axios.get(temp)
-            .then(res => {
-                this.setState({
-                    showText: res.data.data,
-                });
+
+    deleteData = (item)=>{
+        this.setModalVisible(true);
+        axios
+            .delete('https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/usrSchedule/'+this.state.currentEmail+'?crn='+JSON.stringify(item.crn), {
+                crn:JSON.stringify(item.crn)
             })
+            .then(response => {
+                if (response.data.status) {
+                    console.log(response);
+                }
+            }).catch(error => {console.log(error)});
+        this.loadData();
+    }
+
+    loadData =() => {
+        fetch("https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/usrSchedule/" + this.state.currentEmail + '?', {
+            method: 'GET'
+        })
+            .then((response) => response.json())
+            .then((json) => {
+                // console.log(json);
+                this.setState({showText: json.data});
+            })
+            .catch((error) => console.error(error))
     }
 
 
@@ -78,30 +106,36 @@ export default class Profile extends React.Component{
     //     this.deleteRow(rowMap,rowKey)
     // };
 
+    setModalVisible = (visible) => {
+        this.setState({ modalVisible: visible });
+    }
+
     render() {
         const {navigation} = this.props;
+        const { modalVisible } = this.state;
 
 
         const renderItem = ({item}) => {
             let favoriteIcon =  <TouchableOpacity
                 style={{padding: 6}}
                 underlayColor='transparent'
-                onPress={() => {deleteData()}}
+                onPress={() => {this.deleteData(item)}}
             >
                 <AntDesign name="delete" size={24} color="black" />
             </TouchableOpacity>;
 
-            const deleteData = ()=>{
-                axios
-                    .delete('https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/usrSchedule/123@gmail.com?crn='+JSON.stringify(item.crn), {
-                        crn:JSON.stringify(item.crn)
-                    })
-                    .then(response => {
-                        if (response.data.status) {
-                            console.log(response);
-                        }
-                    }).catch(error => {console.log(error)});
-            }
+            // const deleteData = ()=>{
+            //     this.setModalVisible(true);
+            //     axios
+            //         .delete('https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/usrSchedule/'+this.state.currentEmail+'?crn='+JSON.stringify(item.crn), {
+            //             crn:JSON.stringify(item.crn)
+            //         })
+            //         .then(response => {
+            //             if (response.data.status) {
+            //                 console.log(response);
+            //             }
+            //         }).catch(error => {console.log(error)});
+            // }
 
             return <TouchableOpacity
                 onPress={() => {}}
@@ -130,7 +164,7 @@ export default class Profile extends React.Component{
 
         return (
                 <SafeAreaView style={styles.container}>
-                    <ScrollView showsVerticalScrollIndicator={false}>
+
                         <View style={styles.titleBar}>
                             <Ionicons name="ios-arrow-back" size={24} color="#52575D"></Ionicons>
                             <Ionicons name="md-more" size={24} color="#52575D"></Ionicons>
@@ -150,7 +184,7 @@ export default class Profile extends React.Component{
                         </View>
 
                         <View style={styles.infoContainer}>
-                            <Text style={[styles.text, { fontWeight: "200", fontSize: 36 }]}>Gitty</Text>
+                            <Text style={[styles.text, { fontWeight: "200", fontSize: 36 }]}>{firebase.auth().currentUser.displayName}</Text>
                             <Text style={[styles.text, { color: "#AEB5BC", fontSize: 14 }]}>{firebase.auth().currentUser.email}</Text>
                         </View>
 
@@ -174,7 +208,7 @@ export default class Profile extends React.Component{
                                 <TouchableOpacity
                                     style={styles.buttonContainer}
                                     onPress={() => navigation.navigate('SearchPage')}>
-                                    <Text style={styles.buttonText}>Search More Courses</Text>
+                                    <Text style={styles.buttonText}>Search and Enroll Courses</Text>
                                 </TouchableOpacity>
                             </View>
 
@@ -208,14 +242,35 @@ export default class Profile extends React.Component{
                             {/*    <Text style={[styles.text, { fontSize: 12, color: "#DFD8C8", textTransform: "uppercase" }]}>Media</Text>*/}
                             {/*</View>*/}
                         </View>
+                        <Modal
+                            animationType="slide"
+                            transparent={true}
+                            visible={modalVisible}
+                            onRequestClose={() => {
+                                Alert.alert("Modal has been closed.");
+                            }}
+                        >
+                            <View style={styles.centeredView}>
+                                <View style={styles.modalView}>
+                                    <Text style={styles.modalText}>Delete Courses will also delete your remark!</Text>
+
+                                    <TouchableHighlight
+                                        style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+                                        onPress={() => {
+                                            this.setModalVisible(!modalVisible);
+                                        }}
+                                    >
+                                        <Text style={styles.textStyle}>OK</Text>
+                                    </TouchableHighlight>
+                                </View>
+                            </View>
+                        </Modal>
                         <Text style={[styles.subText, styles.recent]}>Enrolled courses</Text>
                         <FlatList
                             data={this.state.showText}
                             renderItem={renderItem}
                             keyExtractor={item => '' + item.crn}
                         />
-
-                    </ScrollView>
 
                 {/*<FlatList*/}
                 {/*    data={this.state.data} // Assuming this is `this.state.data`*/}
@@ -369,5 +424,41 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         padding: 10,
         margin: 20
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5
+    },
+    openButton: {
+        backgroundColor: "#F194FF",
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2
+    },
+    textStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center"
+    },
+    modalText: {
+        marginBottom: 15,
+        textAlign: "center"
     }
 });

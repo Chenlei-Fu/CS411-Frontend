@@ -8,12 +8,13 @@ import SearchItem from "../../components/SearchItem";
 import GlobalStyles from "../../utils/GlobalStyles";
 import axios from "axios";
 import * as firebase from 'firebase'
-const email = firebase.auth().currentUser.email;
+// const email = firebase.auth().currentUser.email;
 class Favorite extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            user: ''
+            user: '',
+            email: firebase.auth().currentUser.email
         }
     }
     componentDidMount() {
@@ -23,7 +24,7 @@ class Favorite extends React.Component{
     }
 
     postData = () => {
-        let temp = "https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/usrSchedule/"+email+'?';
+        let temp = "https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/usrSchedule/"+this.state.email+'?';
         let data = [];
         // console.log(this.props.favorites[0].crn);
         for(let i = 0; i < this.props.favorites.length; i++) {

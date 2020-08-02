@@ -11,7 +11,6 @@ import scheduler from "../screens/Scheduler/scheduler";
 import PopularScreen from "../screens/Popular/popularScreen";
 import SearchPage from "../screens/Search/searchPage";
 import enrollment from "../screens/Search/enrollment";
-import SwipeToDelete from "../screens/Profile/SwipeToDelete";
 import newWindow from "../screens/Scheduler/newWindow";
 import Favorite from "../screens/Search/Favorite";
 const Stack = createStackNavigator();
@@ -98,9 +97,9 @@ export default function AppStack(){
             <Stack.Screen name="Scheduler" component={scheduler} options={{ title: 'Scheduler Screen' }} />
             <Stack.Screen name="SearchPage" component={SearchPage} options={{ title: 'Search Courses' }} />
             <Stack.Screen name="Enrollment" component={enrollment} options={{ title: 'Enroll Courses' }} />
-            <Stack.Screen name="CourseItem" component={SwipeToDelete} options={{ title: 'Show Courses' }} />
             <Stack.Screen name="newWindow" component={newWindow} options={{ title: 'remark Courses' }} />
             <Stack.Screen name="Favorite" component={Favorite} options={{ title: 'Favorites' }} />
+
         </Stack.Navigator>
     );
 }

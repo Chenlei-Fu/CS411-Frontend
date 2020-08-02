@@ -4,12 +4,15 @@ import {
     StyleSheet,
     View,
     Alert, Text, TouchableOpacity,
+    Modal,
+    TouchableHighlight, TextInput
 } from 'react-native';
 import TimeTableView, { genTimeBlock } from 'react-native-timetable';
 import axios from "axios";
-import * as firebase from 'firebase'
-const email = firebase.auth().currentUser.email;
-let parsed_data = [];
+import * as firebase from 'firebase';
+// const email = firebase.auth().currentUser.email;
+let crns = [];
+
 
 export default class App extends Component {
 
@@ -20,37 +23,84 @@ export default class App extends Component {
         this.state = {
             events: '',
             user: '',
+            email: firebase.auth().currentUser.email,
+            modalVisible: false,
+            currentCRN: '',
+            remark: ''
         }
     }
+    //
+    setModalVisible = (visible) => {
+        this.setState({ modalVisible: visible });
+    }
+
 
     componentDidMount() {
         this.unsubscriber = firebase.auth().onAuthStateChanged((user) => {
             this.setState({ user });
         });
-        this.loadData();
+        fetch("https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/usrSchedule/" + this.state.email + '?', {
+            method: 'GET'
+        })
+            .then((response) => response.json())
+            .then((json) => {
+                console.log(json);
+                this.setState({events: json.data});
+            })
+            .catch((error) => console.error(error))
     }
 
     scrollViewRef = (ref) => {
         this.timetableRef = ref;
     };
 
-    onEventPress = (evt) => {
-        Alert.alert("onEventPress", JSON.stringify(evt));
-    };
-
-    loadData() {
-        let temp = "https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/usrSchedule/"+email+'?';
-        axios.get(temp)
-            .then(res => {
-                this.setState({
-                    events: res.data.data,
-                });
+    modifyRemark = () => {
+        let temp = 'https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/remark/modify/jyh@zch.com?rid=6&crn=10005&term=120205&';
+        axios
+            .post(temp+this.state.remark, {
+                remark: this.state.remark
             })
+            .then(response => {
+                if (response.data.status) {
+                    console.log(response);
+                }
+            }).catch(error => {console.log(error)});
     }
 
+    addRemark = () => {
+        // jyh@zch.com?rid=6&crn=10005&term=120205&
+        console.log(this.state.currentCRN);
+        let temp = 'https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/remark/'+this.state.email + '/add';
+        axios
+            .post(temp+this.state.remark, {
+                crn: '40317',
+                term:'120205',
+                remark: 'Hello'
+            })
+            .then(response => {
+                if (response.data.status) {
+                    console.log(response);
+                }
+            }).catch(error => {console.log(error)});
+    }
 
+    onEventPress = (evt) => {
+       Alert.alert("onEventPress", JSON.stringify(evt));
+    };
 
-    parseArray = (data) => {
+    // loadData =() => {
+    //     fetch("https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/usrSchedule/" + this.state.email + '?', {
+    //         method: 'GET'
+    //     })
+    //         .then((response) => response.json())
+    //         .then((json) => {
+    //             // console.log(json);
+    //             this.setState({events: json.data});
+    //         })
+    //         .catch((error) => console.error(error))
+    // }
+
+    parseArray = (data, parsed_data) => {
         /*
           DayOfWeekString : SUN, MON, TUE, WED, THU, FRI, SAT
             type : string
@@ -79,25 +129,60 @@ export default class App extends Component {
                         temp="TRI";
                         break;
                 }
+
                 parsed_data.push({
                     title: data[i].clsCode,
                     startTime: genTimeBlock(temp, startTimes[0],startTimes[1]),
                     endTime: genTimeBlock(temp, endTimes[0], endTimes[1]),
                     location: data[i].building + data[i].room === 0 ? 'Online': data[i].building + data[i].room,
                 });
-
-
             }
-
+            crns.push(data[i].crn);
+            // console.log(crns);
         }
         // console.log(this.parsed_data);
     }
 
     render() {
         const {navigation} = this.props;
-        this.parseArray(this.state.events);
+        const { modalVisible } = this.state;
+        let parsed_data = [];
+
+        this.parseArray(this.state.events, parsed_data);
+
         return (
             <SafeAreaView style={{flex: 1}}>
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => {
+                        Alert.alert("Modal has been closed.");
+                    }}
+                >
+                    <View style={styles.centeredView}>
+                        <View style={styles.modalView}>
+                            <Text style={styles.modalText}>Hello World!</Text>
+                            <TextInput
+                                value={this.state.crn}
+                                onChangeText={(input) => this.setState({ remark: input })}
+                                placeholder={'Add your remark'}
+                                style={styles.input}
+                            />
+
+                            <TouchableHighlight
+                                style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+                                onPress={() => {
+                                    this.setModalVisible(!modalVisible);
+                                    this.addRemark();
+                                }}
+                            >
+                                <Text style={styles.textStyle}>Submit your remark</Text>
+                            </TouchableHighlight>
+                        </View>
+                    </View>
+                </Modal>
+
                 <View style={styles.container}>
                     <TimeTableView
                         scrollViewRef={this.scrollViewRef}
@@ -106,17 +191,23 @@ export default class App extends Component {
                         pivotEndTime={22}
                         pivotDate={this.pivotDate}
                         numberOfDays={this.numOfDays}
-                        onEventPress={this.onEventPress}
+                        onEventPress={(evt) => {
+                            // this.onEventPress(evt);
+                            this.setModalVisible(true);
+                            this.setState({currentCRN: JSON.stringify(crns[evt.id])});
+                            console.log(crns[evt.id]);
+                        }}
                         headerStyle={styles.headerStyle}
                         formatDateHeader="dddd"
                         locale="en"
                     />
                 </View>
-                <TouchableOpacity
-                    style={styles.buttonContainer}
-                    onPress={() => navigation.navigate('newWindow')}>
-                    <Text style={styles.buttonText}>new Window</Text>
-                </TouchableOpacity>
+                {/*<TouchableOpacity*/}
+                {/*    style={styles.buttonContainer}*/}
+                {/*    onPress={() => navigation.navigate('newWindow')}>*/}
+                {/*    <Text style={styles.buttonText}>new Window</Text>*/}
+                {/*</TouchableOpacity>*/}
+
             </SafeAreaView>
         );
     }
@@ -130,4 +221,40 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fbf0f0',
     },
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5
+    },
+    openButton: {
+        backgroundColor: "#F194FF",
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2
+    },
+    textStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center"
+    },
+    modalText: {
+        marginBottom: 15,
+        textAlign: "center"
+    }
 });

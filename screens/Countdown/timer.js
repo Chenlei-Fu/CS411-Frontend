@@ -21,14 +21,15 @@ import {getCountdownParts} from './helper';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
 import * as firebase from 'firebase'
-const email = firebase.auth().currentUser.email;
+// const email = firebase.auth().currentUser.email;
 
 export default class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             curTime: null,
-            courseTime: '2020/07/26 20:40:06'
+            courseTime: '2020/07/26 20:40:06',
+            email: firebase.auth().currentUser.email
         };
     }
     componentDidMount() {
@@ -44,7 +45,7 @@ export default class App extends React.Component {
 
         return (
             <Container>
-                <Title>{CS225}</Title>
+                <Title>{'CS225'}</Title>
                 <AnimatedCircularProgress
                     size={300}
                     width={10}
