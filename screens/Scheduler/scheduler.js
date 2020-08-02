@@ -5,11 +5,12 @@ import {
     View,
     Alert, Text, TouchableOpacity,
     Modal,
-    TouchableHighlight, TextInput
+    TouchableHighlight, TextInput, FlatList
 } from 'react-native';
 import TimeTableView, { genTimeBlock } from 'react-native-timetable';
 import axios from "axios";
 import * as firebase from 'firebase';
+import { AntDesign , EvilIcons} from '@expo/vector-icons';
 // const email = firebase.auth().currentUser.email;
 let crns = [];
 
@@ -26,7 +27,8 @@ export default class App extends Component {
             email: firebase.auth().currentUser.email,
             modalVisible: false,
             currentCRN: '',
-            remark: ''
+            remark: '',
+            showText: ''
         }
     }
     //
@@ -72,16 +74,29 @@ export default class App extends Component {
         console.log(this.state.currentCRN);
         let temp = 'https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/remark/'+this.state.email + '/add';
         axios
-            .post(temp+this.state.remark, {
-                crn: '40317',
-                term:'120205',
-                remark: 'Hello'
+            .post(temp, {
+                crn: this.state.currentCRN,
+                term: 120205,
+                remark: this.state.remark
             })
             .then(response => {
                 if (response.data.status) {
                     console.log(response);
                 }
             }).catch(error => {console.log(error)});
+    }
+
+    getRemark = () => {
+        let temp = 'https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/remark/'+this.state.email;
+        fetch(temp, {
+            method: 'POST'
+        })
+            .then((response) => response.json())
+            .then((json) => {
+                // console.log(json);
+                this.setState({showText: json.data});
+            })
+            .catch((error) => console.error(error))
     }
 
     onEventPress = (evt) => {
@@ -99,6 +114,7 @@ export default class App extends Component {
     //         })
     //         .catch((error) => console.error(error))
     // }
+
 
     parseArray = (data, parsed_data) => {
         /*
@@ -149,6 +165,35 @@ export default class App extends Component {
         let parsed_data = [];
 
         this.parseArray(this.state.events, parsed_data);
+        this.getRemark();
+
+        const renderItem = ({item}) => {
+            let icon = <TouchableOpacity
+                style={{padding: 6}}
+                underlayColor='transparent'
+                onPress={() => {this.modifyRemark(item)}}
+            >
+                <EvilIcons name="check" size={24} color="black" />
+            </TouchableOpacity>;
+
+            return <View>
+                {icon}
+                <Text style={styles.modalText}>{JSON.stringify(item.remark)}</Text>
+            </View>
+
+
+            // return <View>
+            //     <TouchableOpacity
+            //         onPress={(item) => this.modifyRemark(item)
+            //         }
+            //     >
+            //         <Text style={styles.modalText}>{JSON.stringify(item.remark)}</Text>
+            //
+            //     </TouchableOpacity>
+            //
+            // </View>
+        }
+
 
         return (
             <SafeAreaView style={{flex: 1}}>
@@ -162,7 +207,12 @@ export default class App extends Component {
                 >
                     <View style={styles.centeredView}>
                         <View style={styles.modalView}>
-                            <Text style={styles.modalText}>Hello World!</Text>
+                            {/*<Text style={styles.modalText}>{JSON.stringify(this.state.showText)}</Text>*/}
+                            <FlatList
+                                data={this.state.showText}
+                                renderItem={renderItem}
+                                keyExtractor={item => '' + item.rid}
+                            />
                             <TextInput
                                 value={this.state.crn}
                                 onChangeText={(input) => this.setState({ remark: input })}
