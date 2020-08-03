@@ -72,6 +72,7 @@ class SearchPage extends Component {
         const { modalVisible } = this.state;
 
 
+
         const tempRender = (item) => (
             <View>
                 <Text>{item.heading}</Text>
@@ -92,13 +93,11 @@ class SearchPage extends Component {
             return <TouchableOpacity
                 onPress={()=>{
                     navigation.navigate('Detail', {
-                        temp:
-                            {   crn: item.crn,
                                 subject: item.subject,
                                 id: item.course_id,
                                 name: item.course_name,
                                 instructor: item.full_name
-                            }})
+                            })
                 }}
             >
                 <View style={SearchItem.cell_container}>
