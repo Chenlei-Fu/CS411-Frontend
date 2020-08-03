@@ -5943,7 +5943,7 @@ qs@^6.5.0:
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.9.4.tgz#9090b290d1f91728d3c22e54843ca44aea5ab687"
   integrity sha512-A1kFqHekCTM7cz0udomYUoYNWjBebHm/5wzU/XqrBRBNWectVH0QIiN+NEcZ0Dte5hvzHwbr8+XQmguPhJ6WdQ==
 
-query-string@^6.11.1, query-string@^6.12.1:
+query-string@^6.1.0, query-string@^6.11.1, query-string@^6.12.1:
   version "6.13.1"
   resolved "https://registry.yarnpkg.com/query-string/-/query-string-6.13.1.tgz#d913ccfce3b4b3a713989fe6d39466d92e71ccad"
   integrity sha512-RfoButmcK+yCta1+FuU8REvisx1oEzhMKwhLUNcepQTPGcNMp1sIqjnfCtfnvGSQZQEhaBHvccujtWoUV3TTbA==
@@ -6117,6 +6117,13 @@ react-native-modalize@2.0.5:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/react-native-modalize/-/react-native-modalize-2.0.5.tgz#1a9df6864850e93a5c7b0c9fb1a0ded30057f8a0"
   integrity sha512-7xcgMSbJH1VVi+EmcnkWfzvul5pr2RGCPK1oyK818wBHCA4WGRanEVegFyEuGOHk6nz2BL0rQb+cu5oMvh66mQ==
+
+react-native-open-maps@0.3.5:
+  version "0.3.5"
+  resolved "https://registry.yarnpkg.com/react-native-open-maps/-/react-native-open-maps-0.3.5.tgz#719a002db50b2f5fb4e4d043c174c0827b87f2ee"
+  integrity sha512-JPRZVj8gYJDHqJZV90BQIemIvTmoxCE8T3CVD3w25ZNXjf822xAespJ+JRRCB8gZ58TnmcrzcRG8cst/tJeIhQ==
+  dependencies:
+    query-string "^6.1.0"
 
 react-native-progress@4.1.2:
   version "4.1.2"

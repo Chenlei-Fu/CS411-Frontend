@@ -99,7 +99,7 @@ export default function LoginScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     padding: 15,
-    backgroundColor: Colors.mediumGrey
+    backgroundColor: '#80A1B1'
   },
   footerButtonContainer: {
     marginVertical: 15,

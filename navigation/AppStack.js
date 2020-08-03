@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator} from '@react-navigation/bottom-tabs'
-import { Ionicons, Feather, FontAwesome5, SimpleLineIcons } from '@expo/vector-icons'
+import { Ionicons, Feather, FontAwesome5, SimpleLineIcons, AntDesign } from '@expo/vector-icons'
 import HomeScreen from '../screens/HomeScreen';
 import Detail from "../screens/Detail";
 import Settings from "../screens/Settings";
@@ -15,6 +15,7 @@ import newWindow from "../screens/Scheduler/newWindow";
 import Favorite from "../screens/Search/Favorite";
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
+
 
 function getHeaderTitle(route) {
     const routeName = route.state
@@ -48,7 +49,7 @@ function MainTabNavigator() {
                 component={HomeScreen}
                 options={{
                     tabBarIcon: ({ color, size }) => (
-                        <Ionicons name='ios-home' color={color} size={size} />
+                        <AntDesign name="home" size={size} color={color} />
                     )
                 }}
             />
@@ -57,7 +58,7 @@ function MainTabNavigator() {
                 component={PopularScreen}
                 options={{
                     tabBarIcon: ({ color, size }) => (
-                        <SimpleLineIcons name="fire" size={24} color="black" />
+                        <SimpleLineIcons name="fire" size={size} color={color} />
                     )
                 }}
             />
@@ -66,7 +67,7 @@ function MainTabNavigator() {
                 component={Profile}
                 options={{
                     tabBarIcon: ({ color, size }) => (
-                        <Ionicons name='ios-person' size={size} color={color} />
+                        <AntDesign name="meh" size={size} color={color} />
                     )
                 }}
             />

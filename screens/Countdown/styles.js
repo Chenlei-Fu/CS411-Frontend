@@ -3,7 +3,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialIcons } from '@expo/vector-icons';
 
 export const Container = styled(LinearGradient).attrs({
-    colors: ['#f2f2f2', '#ebd5d5'],
+    colors: ['#f2f2f2', '#80A1B1'],
 })`
   flex: 1;
   justify-content: center;

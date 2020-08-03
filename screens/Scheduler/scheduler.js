@@ -265,11 +265,11 @@ export default class App extends Component {
 
 const styles = StyleSheet.create({
     headerStyle: {
-        backgroundColor: '#7c7575'
+        backgroundColor: '#1A3259'
     },
     container: {
         flex: 1,
-        backgroundColor: '#fbf0f0',
+        backgroundColor: '#80A1B1',
     },
     centeredView: {
         flex: 1,

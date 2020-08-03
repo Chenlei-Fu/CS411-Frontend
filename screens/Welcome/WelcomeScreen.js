@@ -18,7 +18,7 @@ export default function WelcomeScreen({ navigation }) {
         <AppButton title="Login" onPress={() => navigation.navigate('Login')} />
         <AppButton
           title="Register"
-          color="secondary"
+          color='secondary'
           onPress={() => navigation.navigate('Register')}
         />
       </View>
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    backgroundColor: Colors.mediumGrey
+    backgroundColor: '#80A1B1'
   },
   logoContainer: {
     position: 'absolute',
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '600',
     paddingVertical: 20,
-    color: Colors.primary
+    color: '#1A3259'
   },
   buttonContainer: {
     padding: 20,

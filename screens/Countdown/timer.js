@@ -8,7 +8,8 @@ import {
     TouchableOpacity,
     Dimensions,
     Picker,
-    Platform
+    Platform,
+    Button
 } from "react-native";
 
 import {
@@ -22,16 +23,23 @@ import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
 import * as firebase from 'firebase'
 // const email = firebase.auth().currentUser.email;
-
+import {createOpenLink} from 'react-native-open-maps';
+const yosemite = { latitude: 37.4847, longitude: 122.1477 };
+const openYosemiteZoomedOut = createOpenLink({ ...yosemite, zoom: 30, provider: 'google' });
 export default class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             curTime: null,
-            courseTime: '2020/07/26 20:40:06',
+            courseTime: '2020/08/3 20:40:06',
             email: firebase.auth().currentUser.email
         };
     }
+
+    _goToYosemite() {
+        openMap({ latitude: 40.1150, longitude: 88.2282 });
+    }
+
     componentDidMount() {
         setInterval(() => {
             this.setState({
@@ -39,6 +47,19 @@ export default class App extends React.Component {
             })
         }, 1000)
     }
+
+    // loadData =() => {
+    //     fetch("https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/usrSchedule/" + this.state.email + '?', {
+    //         method: 'GET'
+    //     })
+    //         .then((response) => response.json())
+    //         .then((json) => {
+    //             // console.log(json);
+    //             this.setState({showText: json.data});
+    //             console.log(this.state.showText);
+    //         })
+    //         .catch((error) => console.error(error))
+    // }
 
     render() {
         const{days,hours,minutes,seconds} = getCountdownParts(this.state.courseTime);
@@ -50,7 +71,7 @@ export default class App extends React.Component {
                     size={300}
                     width={10}
                     fill={(minutes + hours * 60)*100 / 60}
-                    tintColor="#ea8a8a"
+                    tintColor="#6286A5"
                     backgroundColor="#fff"
                     rotation={0}
                 >
@@ -65,9 +86,14 @@ export default class App extends React.Component {
                     style={{
                         fontWeight: "bold",
                         textAlign: "center",
-                        marginTop: 100
+                        marginTop: 80,
+                        marginBottom: 20
                     }}
-                >Address: {ECEB}</Text>
+                >Address: {'ECEB'}</Text>
+                <Button
+                    color={'#1A3259'}
+                    onPress={openYosemiteZoomedOut}
+                    title="Click To Open Maps 🏃🏻‍♂️" />
             </Container>
         );
     }

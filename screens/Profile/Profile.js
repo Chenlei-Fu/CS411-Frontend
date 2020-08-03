@@ -235,7 +235,7 @@ export default class Profile extends React.Component{
                             </View>
                         </View>
 
-                        <View style={{ marginTop: 32 }}>
+                        <View style={{ marginTop: 32, marginLeft: 50, marginRight:50, alignItems:'center' }}>
                             <View>
                                 <TouchableOpacity
                                     style={styles.buttonContainer}
@@ -442,7 +442,7 @@ const styles = StyleSheet.create({
         marginRight: 20
     },
     buttonContainer: {
-        backgroundColor: '#222',
+        backgroundColor: '#d9adad',
         borderRadius: 5,
         padding: 10,
         margin: 20
