@@ -142,7 +142,7 @@ class SearchPage extends Component {
 
 
                 <View style={{
-                    backgroundColor: '#c9d6df',
+                    backgroundColor: '#6286A5',
                     marginBottom: 30
                 }}
                 >
@@ -201,7 +201,7 @@ class SearchPage extends Component {
                     />
                     <TouchableOpacity
                         style={{
-                            backgroundColor: '#52616b',
+                            backgroundColor: '#1A3259',
                             alignItems: "center",
                             padding: 10
                         }}
@@ -233,10 +233,20 @@ class SearchPage extends Component {
                     keyExtractor={item => '' + item.crn+item.term_id+item.start}
                 />
                 {/*<SearchIcon/>*/}
+                {/*<TouchableOpacity*/}
+                {/*    style={styles.buttonContainer}*/}
+                {/*    onPress={() => navigation.navigate('Favorite')}>*/}
+                {/*    <Text style={styles.buttonText}>Go to Favorites</Text>*/}
+                {/*</TouchableOpacity>*/}
                 <TouchableOpacity
-                    style={styles.buttonContainer}
-                    onPress={() => navigation.navigate('Favorite')}>
-                    <Text style={styles.buttonText}>Go to Favorites</Text>
+                    style={{backgroundColor: '#1A3259', marginTop: 20,marginBottom: 50,marginLeft: 100, marginRight: 100, padding:6, borderRadius: 5}}
+                    onPress={() => navigation.navigate('Favorite')}
+
+                >
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={{marginLeft: 0, color: 'white'}}>GO TO FAVORITES</Text>
+                        <AntDesign name="heart" size={18} color="white" />
+                    </View>
                 </TouchableOpacity>
             </View>
         );
@@ -341,11 +351,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#222',
         borderRadius: 5,
         padding: 10,
-        margin: 20
+        marginBottom: 40,
+        alignItems: "center",
     },
     buttonText: {
         fontSize: 20,
-        color: '#fff'
+        color: '#fff',
+        justifyContent: 'center',
     },
     centeredView: {
         flex: 1,

@@ -40,7 +40,7 @@ function MainTabNavigator() {
             tabBarOptions={{
                 activeTintColor: '#101010',
                 style: {
-                    backgroundColor: '#ffd700'
+                    backgroundColor: '#6286A5'
                 }
             }}>
             <Tab.Screen
@@ -70,26 +70,29 @@ function MainTabNavigator() {
                     )
                 }}
             />
-            <Tab.Screen
-                name='Setting'
-                component={Settings}
-                options={{
-                    tabBarIcon: ({ color, size }) => (
-                        <Feather name="settings" size={size} color={color} />
-                    )
-                }}
-            />
         </Tab.Navigator>
     )
 }
 export default function AppStack(){
     return (
-        <Stack.Navigator initialRouteName='Home'>
+        <Stack.Navigator initialRouteName='Home'
+                         screenOptions={{
+                             gestureEnabled: true,
+                             headerStyle: {
+                                 backgroundColor: '#101010'
+                             },
+                             headerTitleStyle: {
+                                 fontWeight: 'bold'
+                             },
+                             headerTintColor: '#80A1B1',
+                             headerBackTitleVisible: false
+                         }}>
             <Stack.Screen
                 name="Home"
                 component={MainTabNavigator}
                 options={({ route }) => ({
-                    headerTitle: getHeaderTitle(route)
+                    headerTitle: getHeaderTitle(route),
+
                 })}
             />
             <Stack.Screen name="Detail" component={Detail} options={{ title: 'Detail Screen' }} />
