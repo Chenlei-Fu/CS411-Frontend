@@ -107,6 +107,9 @@ class SearchPage extends Component {
                     <Text style={SearchItem.description}>
                         {JSON.stringify(item.type_name)}
                     </Text>
+                    <Text style={SearchItem.description}>
+                        {JSON.stringify(item.full_name)}
+                    </Text>
                     <View style={SearchItem.row}>
                         <View style={SearchItem.row}>
                             <Text>CRN: {JSON.stringify(item.crn)}</Text>
@@ -114,6 +117,8 @@ class SearchPage extends Component {
                         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                             <Text>Term: </Text>
                             <Text>{JSON.stringify(item.term_name)}</Text>
+                            {/*<Text>Instructor:</Text>*/}
+                            {/*<Text>{JSON.stringify(item.full_name)}</Text>*/}
                         </View>
                         {favoriteIcon}
                     </View>

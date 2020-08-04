@@ -1,10 +1,12 @@
 // src/screens/Home.js
 
 import React, {useEffect, useState} from 'react'
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
+import {StyleSheet, View, Text, TouchableOpacity, FlatList} from 'react-native'
 import axios from 'axios';
 import { VictoryBar, VictoryChart, VictoryAxis } from "victory-native";
 import {parse} from "react-native-svg";
+import {AntDesign, MaterialIcons} from "@expo/vector-icons";
+import CustomRow from '../components/CustomRow';
 
 const gpas = [
         {name: "A+", nums: 40},
@@ -18,6 +20,7 @@ class Detail extends React.Component{
         super(props);
         this.state = {
             data: '',
+            rating: ''
         }
     }
 
@@ -71,11 +74,28 @@ class Detail extends React.Component{
 
     }
 
+    getRating = (instructor) => {
+        console.log(instructor);
+        if(this.state.rating === '') {
+            axios
+                .get('https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/rating?name='+instructor, {
+                })
+                .then(response => {
+                    console.log(response.data.data);
+                    this.setState({rating: response.data.data});
+                }).catch(error => {console.log(error)});
+        }
+    }
+
+
+
     render() {
         const {route, navigation} = this.props
         // console.log(route.params);
         const subject = route.params.subject;
         const id = route.params.id;
+        const instructor = route.params.instructor;
+        console.log(instructor);
 
         let res = [];
         let name = [];
@@ -83,13 +103,79 @@ class Detail extends React.Component{
         this.getGPA(subject,id);
         this.getRes(this.state.data, res);
         this.getName(this.state.data, name);
+        this.getRating(instructor);
 
-        console.log(name);
+        console.log(this.state.rating);
 
+        const renderItem = ({item}) => {
+            console.log(item);
+            // const deleteData = ()=>{
+            //     this.setModalVisible(true);
+            //     axios
+            //         .delete('https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/usrSchedule/'+this.state.currentEmail+'?crn='+JSON.stringify(item.crn), {
+            //             crn:JSON.stringify(item.crn)
+            //         })
+            //         .then(response => {
+            //             if (response.data.status) {
+            //                 console.log(response);
+            //             }
+            //         }).catch(error => {console.log(error)});
+            // }
+
+            return <View
+                style={{
+                    backgroundColor: '#bad7df',
+                    borderRadius: 5,
+                    margin: 10
+                }}
+            ><TouchableOpacity
+                onPress={() => {}}
+            >
+                <View style={{
+                    padding: 10,
+                    margin:5,
+                    borderRadius: 5,
+                    backgroundColor: '#80A1B1',
+                    alignItems: 'flex-end',
+                    // height: 60,
+                    width: 250
+                }}>
+                    <Text style={{
+                        fontSize: 16,
+                        color: '#000',
+                        justifyContent: 'center',
+                        flex: 1,
+                        fontWeight: "bold"
+                    }}>
+                        {(item._source.fullName)}
+                    </Text>
+                    <Text style={{
+                        flex: 1,
+                        flexDirection: 'column',
+                        marginLeft: 12,
+                        justifyContent: 'center',
+                    }}>
+                        AvgRating: {(item._source.avgRating)}
+                    </Text>
+                </View>
+
+            </TouchableOpacity></View>
+        }
 
         return (
             <View style={styles.container}>
-                <Text style={styles.text}>{subject} {name[1]}</Text>
+                <View style={{marginTop:20}}>
+                <AntDesign name="barschart" size={24} color="black" />
+                </View>
+                <Text style={{
+                    color: '#101010',
+                    fontSize: 24,
+                    fontWeight: 'bold',
+                    marginTop:10,
+                    marginBottom:10
+                    }}
+                >{subject} {name[1]}</Text>
+
                 <Text style={styles.text}>{name[0]}</Text>
                 <VictoryChart
                     domainPadding={20}
@@ -112,6 +198,35 @@ class Detail extends React.Component{
                     />
 
                 </VictoryChart>
+                <View
+                    style={{
+                        borderBottomColor: 'black',
+                        borderBottomWidth: 1,
+                        alignSelf:'stretch',
+                        marginLeft: 80,
+                        marginRight: 80,
+                        marginTop: 30,
+                        marginBottom:20
+                    }}
+                />
+                <View style={{marginTop:20}}>
+                    <AntDesign name="heart" size={20} color="black" />
+                </View>
+                <Text style={{
+                    color: '#101010',
+                    fontSize: 24,
+                    fontWeight: 'bold',
+                    marginTop:20,
+                    marginBottom:20
+                }}
+                >Related Professor Ratings</Text>
+
+                <FlatList
+                    data={this.state.rating}
+                    renderItem={renderItem}
+                    keyExtractor={item => '' + item._id + item._source.fullName}
+                    // numColumns={2}
+                />
 
             </View>
         )
@@ -199,12 +314,12 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#ebebeb'
+        backgroundColor: '#ebebeb',
     },
     text: {
         color: '#101010',
         fontSize: 24,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
     },
     card: {
         width: 350,
@@ -229,6 +344,11 @@ const styles = StyleSheet.create({
     buttonText: {
         fontSize: 20,
         color: '#fff'
+    },
+    lineStyle:{
+        borderWidth: 0.5,
+        borderColor:'black',
+        margin:10,
     }
 })
 
