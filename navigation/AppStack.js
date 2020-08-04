@@ -103,7 +103,6 @@ export default function AppStack(){
             <Stack.Screen name="Enrollment" component={enrollment} options={{ title: 'Enroll Courses' }} />
             <Stack.Screen name="newWindow" component={newWindow} options={{ title: 'remark Courses' }} />
             <Stack.Screen name="Favorite" component={Favorite} options={{ title: 'Favorites' }} />
-
         </Stack.Navigator>
     );
 }

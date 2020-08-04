@@ -10,7 +10,7 @@ import {
 import TimeTableView, { genTimeBlock } from 'react-native-timetable';
 import axios from "axios";
 import * as firebase from 'firebase';
-import { AntDesign , EvilIcons} from '@expo/vector-icons';
+import { AntDesign , EvilIcons, Entypo} from '@expo/vector-icons';
 // const email = firebase.auth().currentUser.email;
 let crns = [];
 
@@ -26,9 +26,12 @@ export default class App extends Component {
             user: '',
             email: firebase.auth().currentUser.email,
             modalVisible: false,
+            modalVisible2: false,
             currentCRN: '',
             remark: '',
-            showText: ''
+            showText: '',
+            rid: '',
+            temp_remark: ''
         }
     }
     //
@@ -36,6 +39,10 @@ export default class App extends Component {
         this.setState({ modalVisible: visible });
     }
 
+    setModalVisible2 = (visible, rid) => {
+        this.setState({modalVisible2: visible});
+        this.setState({rid: rid});
+    }
 
     componentDidMount() {
         this.unsubscriber = firebase.auth().onAuthStateChanged((user) => {
@@ -57,10 +64,13 @@ export default class App extends Component {
     };
 
     modifyRemark = () => {
-        let temp = 'https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/remark/modify/jyh@zch.com?rid=6&crn=10005&term=120205&';
+        let temp = 'https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/remark/'+this.state.email + '/modify';
+        console.log(this.state.temp_remark);
+        console.log(this.state.remark);
         axios
-            .post(temp+this.state.remark, {
-                remark: this.state.remark
+            .post(temp, {
+                rid: this.state.rid,
+                remark: this.state.temp_remark
             })
             .then(response => {
                 if (response.data.status) {
@@ -162,6 +172,7 @@ export default class App extends Component {
     render() {
         const {navigation} = this.props;
         const { modalVisible } = this.state;
+        const {modalVisible2} = this.state;
         let parsed_data = [];
 
         this.parseArray(this.state.events, parsed_data);
@@ -171,9 +182,9 @@ export default class App extends Component {
             let icon = <TouchableOpacity
                 style={{padding: 6}}
                 underlayColor='transparent'
-                onPress={() => {this.modifyRemark(item)}}
+                onPress={() => {this.setModalVisible2(true, item.rid)}}
             >
-                <EvilIcons name="check" size={24} color="black" />
+                <Entypo name="pencil" size={24} color="black" />
             </TouchableOpacity>;
 
             return <View>
@@ -205,6 +216,36 @@ export default class App extends Component {
                         Alert.alert("Modal has been closed.");
                     }}
                 >
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={modalVisible2}
+                        onRequestClose={() => {
+                            Alert.alert("Modal has been closed.");
+                        }}
+                    >
+                        <View style={styles.centeredView}>
+                            <View style={styles.modalView}>
+                                {/*<Text style={styles.modalText}>{JSON.stringify(this.state.showText)}</Text>*/}
+                                <TextInput
+                                    value={this.state.crn}
+                                    onChangeText={(input) => this.setState({ temp_remark: input })}
+                                    placeholder={'Modify This remark'}
+                                    style={styles.input}
+                                />
+
+                                <TouchableHighlight
+                                    style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+                                    onPress={() => {
+                                        this.modifyRemark();
+                                        this.setModalVisible2(!modalVisible);
+                                    }}
+                                >
+                                    <Text style={styles.textStyle}>Modify your remark</Text>
+                                </TouchableHighlight>
+                            </View>
+                        </View>
+                    </Modal>
                     <View style={styles.centeredView}>
                         <View style={styles.modalView}>
                             {/*<Text style={styles.modalText}>{JSON.stringify(this.state.showText)}</Text>*/}
@@ -232,6 +273,7 @@ export default class App extends Component {
                         </View>
                     </View>
                 </Modal>
+
 
                 <View style={styles.container}>
                     <TimeTableView

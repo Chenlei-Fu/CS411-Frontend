@@ -17,6 +17,7 @@ import {
     Modal,
 
 } from 'react-native';
+import { VictoryBar, VictoryChart, VictoryPie } from "victory-native";
 import AsyncStorage from '@react-native-community/async-storage';
 import { Formik } from 'formik';
 import DataStore from '../../expand/dao/DataStore';
@@ -37,7 +38,9 @@ export default class Profile extends React.Component{
             showText: '',
             selectedKey: '',
             modalVisible: false,
-            workload: ''
+            modalVisible2: false,
+            workload: '',
+            data: []
         };
         this.dataDtore = new DataStore();
     }
@@ -100,17 +103,35 @@ export default class Profile extends React.Component{
 
     getWorkLoad = async ()  => {
         //https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/difficulty/{{email}}
+        if(this.state.workload === '') {
+            axios
+                .post('https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/difficulty/'+this.state.currentEmail+'?', {
+                    term:120205
+                })
+                .then(response => {
+                    if (response.data.status) {
+                        console.log(response);
+                        this.setState({workload: JSON.stringify(response.data.data)});
+                    }
+                }).catch(error => {console.log(error)});
+        }
 
-        axios
-            .post('https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/difficulty/'+this.state.currentEmail+'?', {
+    }
+
+    getDistribution = () => {
+        //https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/difficulty/{{email}}/breakdown
+        if(this.state.data.length === 0) {
+            axios.
+                post('https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/difficulty/'+this.state.currentEmail+'/breakdown', {
                 term:120205
             })
-            .then(response => {
-                if (response.data.status) {
-                    console.log(response);
-                    this.setState({workload: JSON.stringify(response.data.data)});
-                }
-            }).catch(error => {console.log(error)});
+                .then(response => {
+                    if (response.data.status) {
+                        console.log(response.data.data);
+                        this.setState({data: response.data.data});
+                    }
+                }).catch(error => {console.log(error)});
+        }
     }
 
 
@@ -143,9 +164,29 @@ export default class Profile extends React.Component{
         this.setState({ modalVisible: visible });
     }
 
+    setModalVisible2 = (visible) => {
+        this.setState({modalVisible2: visible});
+    }
+
+    getRes = (data, res) => {
+        for(let i = 0; i < data.length; i++) {
+            res.push({
+                x: data[i].clsCode,
+                y: data[i].contribution
+            })
+        }
+    }
+
+
     render() {
         const {navigation} = this.props;
         const { modalVisible } = this.state;
+        const {modalVisible2} = this.state;
+        this.getDistribution();
+        let res = [];
+        this.getRes(this.state.data, res);
+        console.log(res);
+
 
         const renderItem = ({item}) => {
             let favoriteIcon =  <TouchableOpacity
@@ -230,8 +271,12 @@ export default class Profile extends React.Component{
                                 <Text style={[styles.text, styles.subText]}>94</Text>
                             </View>
                             <View style={styles.statsBox}>
-                                <Text style={[styles.text, { fontSize: 24 }]}>Workload</Text>
-                                <Text style={[styles.text, styles.subText]}>{this.state.workload}</Text>
+                                <TouchableOpacity
+                                    onPress={() => this.setModalVisible2(true)}
+                                >
+                                    <Text style={[styles.text, { fontSize: 24 }]}>Workload</Text>
+                                    <Text style={[styles.text, styles.subText]}>{this.state.workload}</Text>
+                                </TouchableOpacity>
                             </View>
                         </View>
 
@@ -287,7 +332,7 @@ export default class Profile extends React.Component{
                                     <Text style={styles.modalText}>Delete Courses will also delete your remark!</Text>
 
                                     <TouchableHighlight
-                                        style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
+                                        style={{ ...styles.openButton, backgroundColor: "#6286A5" }}
                                         onPress={() => {
                                             this.setModalVisible(!modalVisible);
                                         }}
@@ -297,12 +342,38 @@ export default class Profile extends React.Component{
                                 </View>
                             </View>
                         </Modal>
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={modalVisible2}
+                        onRequestClose={() => {
+                            Alert.alert("Modal has been closed.");
+                        }}
+                    >
+                        <View style={styles.centeredView}>
+                            <View style={styles.modalView}>
+                                <VictoryPie
+                                data={res}
+                                />
+
+                                <TouchableHighlight
+                                    style={{ ...styles.openButton, backgroundColor: "#6286A5" }}
+                                    onPress={() => {
+                                        this.setModalVisible2(!modalVisible2);
+                                    }}
+                                >
+                                    <Text style={styles.textStyle}>Hide Workload Distribution</Text>
+                                </TouchableHighlight>
+                            </View>
+                        </View>
+                    </Modal>
                         <Text style={[styles.subText, styles.recent]}>Enrolled courses</Text>
                         <FlatList
                             data={this.state.showText}
                             renderItem={renderItem}
                             keyExtractor={item => '' + item.crn}
                         />
+
 
                 {/*<FlatList*/}
                 {/*    data={this.state.data} // Assuming this is `this.state.data`*/}
