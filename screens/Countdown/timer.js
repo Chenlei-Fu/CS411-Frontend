@@ -31,7 +31,7 @@ export default class App extends React.Component {
         super(props);
         this.state = {
             curTime: null,
-            courseTime: '2020/08/3 20:40:06',
+            courseTime: '2020/08/7 13:0:00',
             email: firebase.auth().currentUser.email
         };
     }
@@ -66,7 +66,7 @@ export default class App extends React.Component {
 
         return (
             <Container>
-                <Title>{'CS225'}</Title>
+                <Title>{'CS411 Final Exam'}</Title>
                 <AnimatedCircularProgress
                     size={300}
                     width={10}
@@ -89,7 +89,7 @@ export default class App extends React.Component {
                         marginTop: 80,
                         marginBottom: 20
                     }}
-                >Address: {'ECEB'}</Text>
+                >Address: {'Zoom Online'}</Text>
                 <Button
                     color={'#1A3259'}
                     onPress={openYosemiteZoomedOut}

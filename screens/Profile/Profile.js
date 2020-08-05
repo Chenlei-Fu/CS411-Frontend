@@ -60,6 +60,12 @@ export default class Profile extends React.Component{
 
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if(this.props.showText !== prevProps.showText) {
+            this.loadData();
+        }
+    }
+
     // postData = () => {
     //     let temp = "https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/usrSchedule/"+this.state.currentEmail+'?';
     //     axios

@@ -267,7 +267,7 @@ class PopularTab extends Component {
                                 marginTop:20,
                                 marginBottom:20
                             }}
-                            >Professor Comments</Text>
+                            >Course Comments</Text>
                             <View>
                                 <FlatList
                                     data={this.state.comment}

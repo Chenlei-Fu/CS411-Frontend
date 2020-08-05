@@ -100,10 +100,11 @@ class Favorite extends React.Component{
                     keyExtractor={item => '' + item.crn}
                 />
                 <TouchableOpacity
-                    style={styles.buttonContainer}
+                    style={{backgroundColor: '#1A3259', marginTop: 20,marginBottom: 50,marginLeft: 100, marginRight: 100, padding:6, borderRadius: 5, alignItems: 'center'}}
                     onPress={() => this.postData()}>
                     <Text style={styles.buttonText}>Enroll Courses</Text>
                 </TouchableOpacity>
+
             </View>
         )
     }
@@ -214,7 +215,8 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         fontSize: 20,
-        color: '#fff'
+        color: '#fff',
+        alignItems: 'center'
     }
 })
 

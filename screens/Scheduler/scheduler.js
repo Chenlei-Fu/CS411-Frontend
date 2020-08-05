@@ -48,13 +48,25 @@ export default class App extends Component {
         this.unsubscriber = firebase.auth().onAuthStateChanged((user) => {
             this.setState({ user });
         });
+        this.loadData();
         this.getRemark();
     }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if(this.props.remark !== prevProps.remark || this.props.temp_remark !== prevProps.temp_remark) {
+            this.getRemark();
+        }
+    }
+
+    // shouldComponentUpdate(nextProps, nextState, nextContext) {
+    //     if(this.props.remark !== prevProps.remark || this.props.temp_remark !== prevProps.temp_remark) {
+    //         this.getRemark();
+    //     }
+    // }
 
     scrollViewRef = (ref) => {
         this.timetableRef = ref;
     };
-
     modifyRemark = () => {
         let temp = 'https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/remark/'+this.state.email + '/modify';
         console.log(this.state.temp_remark);
@@ -69,6 +81,7 @@ export default class App extends Component {
                     console.log(response);
                 }
             }).catch(error => {console.log(error)});
+        this.getRemark();
     }
 
     addRemark = () => {
@@ -108,17 +121,17 @@ export default class App extends Component {
         Alert.alert("onEventPress", JSON.stringify(evt));
     };
 
-    // loadData =() => {
-    //     fetch("https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/usrSchedule/" + this.state.email + '?', {
-    //         method: 'GET'
-    //     })
-    //         .then((response) => response.json())
-    //         .then((json) => {
-    //             // console.log(json);
-    //             this.setState({events: json.data});
-    //         })
-    //         .catch((error) => console.error(error))
-    // }
+    loadData =() => {
+        fetch("https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/usrSchedule/" + this.state.email + '?', {
+            method: 'GET'
+        })
+            .then((response) => response.json())
+            .then((json) => {
+                // console.log(json);
+                this.setState({events: json.data});
+            })
+            .catch((error) => console.error(error))
+    }
 
 
     parseArray = (data, parsed_data) => {
@@ -171,7 +184,7 @@ export default class App extends Component {
         let parsed_data = [];
 
         this.parseArray(this.state.events, parsed_data);
-        // this.getRemark();
+        this.getRemark();
 
         const renderItem = ({item}) => {
             let icon = <TouchableOpacity
@@ -184,7 +197,7 @@ export default class App extends Component {
 
             return <View>
                 {icon}
-                <Text style={styles.modalText}>{JSON.stringify(item.remark)}</Text>
+                <Text style={styles.modalText}>{(item.remark)}</Text>
             </View>
 
 
@@ -230,8 +243,8 @@ export default class App extends Component {
                                 <TextInput
                                     value={this.state.crn}
                                     onChangeText={(input) => this.setState({ temp_remark: input })}
-                                    placeholder={'Modify This remark'}
-                                    style={styles.input}
+                                    placeholder={this.state.temp_remark.length === 0 ?'Modify This remark':this.state.temp_remark}
+                                    style={{marginTop: 20, marginBottom: 20}}
                                 />
 
                                 <TouchableHighlight
@@ -263,7 +276,7 @@ export default class App extends Component {
                                 value={this.state.crn}
                                 onChangeText={(input) => this.setState({ remark: input })}
                                 placeholder={'Add your remark'}
-                                style={styles.input}
+                                style={{marginTop: 20, marginBottom: 20}}
                             />
 
                             <TouchableHighlight
