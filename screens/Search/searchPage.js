@@ -102,21 +102,21 @@ class SearchPage extends Component {
             >
                 <View style={SearchItem.cell_container}>
                     <Text style={SearchItem.title}>
-                        {JSON.stringify(item.subject) + JSON.stringify(item.course_id) + JSON.stringify(item.course_name)}
+                        {(item.subject) + (item.course_id) + (item.course_name)}
                     </Text>
                     <Text style={SearchItem.description}>
-                        {JSON.stringify(item.type_name)}
+                        {(item.type_name)}
                     </Text>
                     <Text style={SearchItem.description}>
-                        {JSON.stringify(item.full_name)}
+                        {(item.full_name)}
                     </Text>
                     <View style={SearchItem.row}>
                         <View style={SearchItem.row}>
-                            <Text>CRN: {JSON.stringify(item.crn)}</Text>
+                            <Text>CRN: {(item.crn)}</Text>
                         </View>
                         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                             <Text>Term: </Text>
-                            <Text>{JSON.stringify(item.term_name)}</Text>
+                            <Text>{(item.term_name)}</Text>
                             {/*<Text>Instructor:</Text>*/}
                             {/*<Text>{JSON.stringify(item.full_name)}</Text>*/}
                         </View>
@@ -124,15 +124,15 @@ class SearchPage extends Component {
                     </View>
                     <View style={SearchItem.row}>
                         <View style={SearchItem.row}>
-                            <Text>start: {JSON.stringify(item.start)}</Text>
+                            <Text>start: {(item.start)}</Text>
                         </View>
                         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                             <Text>end: </Text>
-                            <Text>{JSON.stringify(item.end)}</Text>
+                            <Text>{(item.end)}</Text>
                         </View>
                         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                             <Text>days of week: </Text>
-                            <Text>{JSON.stringify(item.days_of_week)}</Text>
+                            <Text>{(item.days_of_week)}</Text>
                         </View>
                     </View>
 
@@ -140,6 +140,7 @@ class SearchPage extends Component {
 
             </TouchableOpacity>
         }
+
 
         return (
             <View style={styles.container}>

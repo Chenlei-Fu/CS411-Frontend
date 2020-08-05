@@ -215,18 +215,18 @@ export default class Profile extends React.Component{
             >
                 <View style={SearchItem.cell_container}>
                     <Text style={SearchItem.title}>
-                        {JSON.stringify(item.clsCode)}
+                        {(item.clsCode)}
                     </Text>
                     <Text style={SearchItem.description}>
-                        {JSON.stringify(item.clsType)}
+                        {(item.clsType)}
                     </Text>
                     <View style={SearchItem.row}>
                         <View style={SearchItem.row}>
-                            <Text>StartTime: {JSON.stringify(item.startTime)}</Text>
+                            <Text>StartTime: {(item.startTime)}</Text>
                         </View>
                         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                             <Text>EndTime: </Text>
-                            <Text>{JSON.stringify(item.endTime)}</Text>
+                            <Text>{(item.endTime)}</Text>
                         </View>
                         {favoriteIcon}
                     </View>

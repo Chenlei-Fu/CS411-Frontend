@@ -1,7 +1,7 @@
 // src/screens/Home.js
 
 import React, {useEffect, useState} from 'react'
-import {StyleSheet, View, Text, TouchableOpacity, FlatList} from 'react-native'
+import {StyleSheet, View, Text, TouchableOpacity, FlatList, Modal, TouchableHighlight} from 'react-native'
 import axios from 'axios';
 import { VictoryBar, VictoryChart, VictoryAxis } from "victory-native";
 import {parse} from "react-native-svg";
@@ -20,9 +20,19 @@ class Detail extends React.Component{
         super(props);
         this.state = {
             data: '',
-            rating: ''
+            rating: '',
+            modalVisible: false,
+            prof_comment: [],
         }
     }
+
+
+
+    setModalVisible = (visible, instructor) => {
+        this.getComment(instructor);
+        this.setState({ modalVisible: visible });
+    }
+
 
     getGPA = (subject,id) => {
         if(this.state.data.length === 0) {
@@ -75,8 +85,7 @@ class Detail extends React.Component{
     }
 
     getRating = (instructor) => {
-        console.log(instructor);
-        if(this.state.rating === '') {
+        if(this.state.rating.length === 0) {
             axios
                 .get('https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/rating?name='+instructor, {
                 })
@@ -87,10 +96,21 @@ class Detail extends React.Component{
         }
     }
 
+    getComment = (instructor) => {
+        axios
+            .get('https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/comment/name/'+instructor + '?limit=10', {
+            })
+            .then(response => {
+                console.log(response.data.data);
+                this.setState({prof_comment: response.data.data});
+            }).catch(error => {console.log(error)});
 
+    }
 
     render() {
-        const {route, navigation} = this.props
+        const {route, navigation} = this.props;
+        const {modalVisible} = this.state;
+        // const {modalVisible2} = this.state;
         // console.log(route.params);
         const subject = route.params.subject;
         const id = route.params.id;
@@ -103,7 +123,14 @@ class Detail extends React.Component{
         this.getGPA(subject,id);
         this.getRes(this.state.data, res);
         this.getName(this.state.data, name);
-        this.getRating(instructor);
+
+        if(this.state.rating.length === 0) {
+            this.getRating(instructor);
+        }
+
+
+
+
 
         console.log(this.state.rating);
 
@@ -129,7 +156,7 @@ class Detail extends React.Component{
                     margin: 10
                 }}
             ><TouchableOpacity
-                onPress={() => {}}
+                onPress={() => {this.setModalVisible(true, item._source.fullName);}}
             >
                 <View style={{
                     padding: 10,
@@ -162,8 +189,69 @@ class Detail extends React.Component{
             </TouchableOpacity></View>
         }
 
+        const renderComment = ({item}) => {
+            console.log(item);
+            // const deleteData = ()=>{
+            //     this.setModalVisible(true);
+            //     axios
+            //         .delete('https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/usrSchedule/'+this.state.currentEmail+'?crn='+JSON.stringify(item.crn), {
+            //             crn:JSON.stringify(item.crn)
+            //         })
+            //         .then(response => {
+            //             if (response.data.status) {
+            //                 console.log(response);
+            //             }
+            //         }).catch(error => {console.log(error)});
+            // }
+
+            return <View><TouchableOpacity
+                onPress={() => {}}
+            >
+                <View style={styles.cell_container}>
+                    <Text style={{
+
+                    }}>
+                        {(item._source.comment)}
+                    </Text>
+                    <View
+                        style={styles.row}
+                    >
+                    <Text style={{
+                        fontWeight:"bold",
+                        marginTop:5
+                    }}>
+                        Got Grade:
+                    </Text>
+                    <Text style={{
+                        marginTop:5
+                    }}>
+                        {'  '}{(item._source.grade)}
+                    </Text>
+                    </View>
+                    <View
+                        style={styles.row}
+                    >
+                        <Text style={{
+                            fontWeight:"bold"
+                        }}>
+                            difficultyRating:
+                        </Text>
+                        <Text style={{
+
+                        }}>
+                            {'  '}{(item._source.difficultyRating)}
+                        </Text>
+                    </View>
+
+                </View>
+
+            </TouchableOpacity></View>
+        }
+
+
         return (
             <View style={styles.container}>
+
                 <View style={{marginTop:20}}>
                 <AntDesign name="barschart" size={24} color="black" />
                 </View>
@@ -227,6 +315,44 @@ class Detail extends React.Component{
                     keyExtractor={item => '' + item._id + item._source.fullName}
                     // numColumns={2}
                 />
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => {
+                        Alert.alert("Modal has been closed.");
+                    }}
+                >
+                    <View style={styles.centeredView}>
+                        <View style={styles.modalView}>
+                            <TouchableHighlight
+                                style={{ ...styles.openButton, backgroundColor: "#80A1B1" }}
+                                onPress={() => {
+                                    this.setModalVisible(!modalVisible);
+                                }}
+                            >
+                                <Text style={styles.textStyle}>Hide Comments</Text>
+                            </TouchableHighlight>
+                            <Text style={{
+                                color: '#101010',
+                                fontSize: 24,
+                                fontWeight: 'bold',
+                                marginTop:20,
+                                marginBottom:20
+                            }}
+                            >Professor Comments</Text>
+                            <View>
+                                <FlatList
+                                    data={this.state.prof_comment}
+                                    renderItem={renderComment}
+                                    keyExtractor={item => ''+item._id}
+                                />
+                            </View>
+
+
+                        </View>
+                    </View>
+                </Modal>
 
             </View>
         )
@@ -349,6 +475,72 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         borderColor:'black',
         margin:10,
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22
+    },
+    modalView: {
+        marginTop: 50,
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5
+    },
+    openButton: {
+        backgroundColor: "#F194FF",
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2
+    },
+    textStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center"
+    },
+    modalText: {
+        marginBottom: 15,
+        textAlign: "center"
+    },
+    cell_container: {
+        backgroundColor: 'white',
+        padding: 10,
+        marginLeft: 5,
+        marginRight: 5,
+        marginVertical: 3,
+        borderColor: '#dddddd',
+        borderWidth: 0.5,
+        borderRadius: 2,
+        shadowColor: 'gray',
+        shadowOffset: {width: 0.5, height: 0.5},
+        shadowOpacity: 0.4,
+        shadowRadius: 1,
+        elevation: 2,
+    },
+    row: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    title: {
+        fontSize: 16,
+        marginBottom: 2,
+        color: '#212121',
+    },
+    description: {
+        fontSize: 14,
+        marginBottom: 2,
+        color: '#757575',
     }
 })
 

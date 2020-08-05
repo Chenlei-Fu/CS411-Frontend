@@ -20,10 +20,10 @@ import Types from '../../action/types';
 export default function onAction(state = [], action) {
     switch (action.type) {
         case Types.FAVORITE_ADD:
-            action.payload.favId = false
+            // action.payload.favId = false
             return [...state, action.payload]
         case Types.FAVORITE_REMOVE:
-            action.payload.favId = true
+            // action.payload.favId = true
             return state.filter(item => item.crn !== action.payload.crn)
         default:
             return state;

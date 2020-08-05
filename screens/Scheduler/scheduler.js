@@ -48,15 +48,7 @@ export default class App extends Component {
         this.unsubscriber = firebase.auth().onAuthStateChanged((user) => {
             this.setState({ user });
         });
-        fetch("https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/usrSchedule/" + this.state.email + '?', {
-            method: 'GET'
-        })
-            .then((response) => response.json())
-            .then((json) => {
-                console.log(json);
-                this.setState({events: json.data});
-            })
-            .catch((error) => console.error(error))
+        this.getRemark();
     }
 
     scrollViewRef = (ref) => {
@@ -97,16 +89,19 @@ export default class App extends Component {
     }
 
     getRemark = () => {
-        let temp = 'https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/remark/'+this.state.email;
-        fetch(temp, {
-            method: 'POST'
-        })
-            .then((response) => response.json())
-            .then((json) => {
-                // console.log(json);
-                this.setState({showText: json.data});
+        if(this.state.showText.length === 0) {
+            let temp = 'https://58cemmiu9d.execute-api.us-west-1.amazonaws.com/dev/remark/'+this.state.email;
+            fetch(temp, {
+                method: 'POST'
             })
-            .catch((error) => console.error(error))
+                .then((response) => response.json())
+                .then((json) => {
+                    console.log(json);
+                    this.setState({showText: json.data});
+                })
+                .catch((error) => console.error(error))
+        }
+
     }
 
     onEventPress = (evt) => {
@@ -176,7 +171,7 @@ export default class App extends Component {
         let parsed_data = [];
 
         this.parseArray(this.state.events, parsed_data);
-        this.getRemark();
+        // this.getRemark();
 
         const renderItem = ({item}) => {
             let icon = <TouchableOpacity
@@ -227,6 +222,11 @@ export default class App extends Component {
                         <View style={styles.centeredView}>
                             <View style={styles.modalView}>
                                 {/*<Text style={styles.modalText}>{JSON.stringify(this.state.showText)}</Text>*/}
+                                <TouchableOpacity
+                                    onPress={() => this.setModalVisible2(false)}
+                                >
+                                    <AntDesign name="closecircle" size={24} color="black" />
+                                </TouchableOpacity>
                                 <TextInput
                                     value={this.state.crn}
                                     onChangeText={(input) => this.setState({ temp_remark: input })}
@@ -248,6 +248,11 @@ export default class App extends Component {
                     </Modal>
                     <View style={styles.centeredView}>
                         <View style={styles.modalView}>
+                            <TouchableOpacity
+                                onPress={() => this.setModalVisible(false)}
+                            >
+                                <AntDesign name="closecircle" size={24} color="black" />
+                            </TouchableOpacity>
                             {/*<Text style={styles.modalText}>{JSON.stringify(this.state.showText)}</Text>*/}
                             <FlatList
                                 data={this.state.showText}
@@ -264,7 +269,7 @@ export default class App extends Component {
                             <TouchableHighlight
                                 style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
                                 onPress={() => {
-                                    this.setModalVisible(!modalVisible);
+                                    // this.setModalVisible(!modalVisible);
                                     this.addRemark();
                                 }}
                             >
