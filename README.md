@@ -26,3 +26,17 @@ Final Project of CS411 at UIUC
 * CRUD Remark in Scheduler ☑️
 * Search Engine with add/delete favorites using redux ☑️
 
+
+
+### 5. Final Fix
+
+* delete popups ☑️
+* Remark Window ☑️
+* Data virtualization part ☑️
+* Fix search engine: scroll down search input ☑️
+* Fix Current Schedule, add Google Map ☑️
+* Finish Professor Part ☑️
+* Scheduler remark closing tag ☑️
+* Popular course with favorite, optimize user experience ☑️
+* Android Test ☑️
+* Remember to fix JSON.stringify... ☑️
