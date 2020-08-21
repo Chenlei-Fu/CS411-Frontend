@@ -1,6 +1,12 @@
 # Ultimate Myillini
 Final Project of CS411 at UIUC
 
+## Demo Video
+[YouTube](https://www.youtube.com/watch?v=4Yq8LZaEFdA)
+
+## Demo
+[Expo Platform](https://expo.io/@chenlei/expo-firebase)
+
 ## Timeline
 
 ### 1. Finish User authentication pages
