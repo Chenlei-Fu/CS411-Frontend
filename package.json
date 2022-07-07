@@ -28,7 +28,7 @@
     "faker": "4.1.0",
     "firebase": "7.9.0",
     "formik": "2.1.4",
-    "moment": "2.27.0",
+    "moment": "2.29.4",
     "prop-types": "15.7.2",
     "react": "16.11.0",
     "react-countdown-circle-timer": "2.3.6",
