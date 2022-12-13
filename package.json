@@ -24,7 +24,7 @@
     "expo-constants": "~9.1.1",
     "expo-font": "~8.2.1",
     "expo-linear-gradient": "~8.2.1",
-    "express": "4.17.1",
+    "express": "4.17.3",
     "faker": "4.1.0",
     "firebase": "7.9.0",
     "formik": "2.1.4",
